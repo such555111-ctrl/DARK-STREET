@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Худи STREET LIFE Crown",
+    "category": "Худи",
+    "price": 3490,
+    "old_price": null,
+    "badge": "hit",
+    "sizes": ["S", "M", "L", "XL"],
+    "desc": "Плотное худи STREET LIFE с вышивкой Crown на груди — свободный крой, мягкий начёс внутри, для города и не только.",
+    "swatch": 0,
+    "images": []
+  },
+  {
+    "id": 2,
+    "name": "Кроссовки STREET LIFE Runner",
+    "category": "Кроссовки",
+    "price": 6990,
+    "old_price": 8990,
+    "badge": "sale",
+    "sizes": ["40", "41", "42", "43", "44", "45"],
+    "desc": "Уличные кроссовки Runner — амортизирующая подошва, дышащий верх, узнаваемый силуэт STREET LIFE.",
+    "swatch": 1,
+    "images": []
+  },
+  {
+    "id": 3,
+    "name": "Футболка STREET LIFE Tag",
+    "category": "Футболки",
+    "price": 1690,
+    "old_price": null,
+    "badge": "instock",
+    "sizes": ["S", "M", "L", "XL"],
+    "desc": "Плотный хлопковый оверсайз — принт Tag на спине, база для повседневных луков.",
+    "swatch": 2,
+    "images": []
+  },
+  {
+    "id": 4,
+    "name": "Кепка STREET LIFE Snapback",
+    "category": "Кепки",
+    "price": 1290,
+    "old_price": null,
+    "badge": "trend",
+    "sizes": ["One Size"],
+    "desc": "Кепка Snapback с объёмной вышивкой логотипа и регулировкой сзади.",
+    "swatch": 3,
+    "images": []
+  },
+  {
+    "id": 5,
+    "name": "Сумка STREET LIFE Sling",
+    "category": "Аксессуары",
+    "price": 2190,
+    "old_price": null,
+    "badge": null,
+    "sizes": ["One Size"],
+    "desc": "Компактная сумка через плечо — плотный нейлон, отделение для телефона и мелочей.",
+    "swatch": 4,
+    "images": []
+  }
+]

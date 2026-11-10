@@ -1,0 +1,1756 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>HQM | SHOP · Админ</title>
+<meta name="theme-color" content="#050506">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-primary:#050506;
+    --bg-card:#111113;
+    --bg-card-hover:#1B1B1F;
+    --accent-color:#D4D7DC;
+    --accent-2:#9EA3AB;
+    --gold:#E6E8EB;
+    --lime:#7FD99A;
+    --text-primary:#F4F4F5;
+    --text-secondary:#A4A5AB;
+    --border-color:#2A2A2F;
+    --font-display:'Oswald','Arial Narrow','Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+  --font-heading:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    --font-body:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+    --grad:linear-gradient(135deg,#F4F5F7 0%,#8E939B 100%);
+    --bg:var(--bg-primary);
+    --bg-elev:var(--bg-card);
+    --text:var(--text-primary);
+    --muted:var(--text-secondary);
+    --muted-dim:#6D6E75;
+    --accent:var(--accent-color);
+    --accent-soft:#C9CCD2;
+    --accent-dim:rgba(212,215,220,.16);
+    --line:var(--border-color);
+    --bg-elev-2:var(--bg-card-hover);
+    --line-soft:rgba(255,255,255,.06);
+    --danger:#E5546B;
+    --ok:#7FD99A;
+    --ease:cubic-bezier(.22,1,.36,1);
+    --ease-sheet:cubic-bezier(.26,1.06,.34,1);
+    --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;scroll-behavior:smooth;}
+  body{
+    background:var(--bg);color:var(--text);font-family:var(--font-body),sans-serif;font-weight:400;
+    min-height:100vh;position:relative;overflow-x:hidden;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 40%, rgba(212,215,220,.05), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(212,215,220,.03), transparent 50%);
+  }
+  .orb{display:none;
+    position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;
+    opacity:.35;animation:orbFloat 20s ease-in-out infinite;
+  }
+  .orb-1{width:250px;height:250px;background:rgba(212,215,220,.07);top:-80px;right:-60px;animation-delay:0s;}
+  .orb-2{width:200px;height:200px;background:rgba(212,215,220,.05);bottom:20%;left:-40px;animation-delay:-8s;animation-duration:22s;}
+  @keyframes orbFloat{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(25px,-25px) scale(1.08);}
+    66%{transform:translate(-15px,15px) scale(.96);}
+  }
+  ::selection{background:var(--accent-dim);color:var(--accent-soft);}
+  ::-webkit-scrollbar{width:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--muted-dim);}
+
+  #app{animation:fadeIn .6s var(--ease) both;position:relative;z-index:1;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+  #app{max-width:640px;margin:0 auto;padding:20px 20px 80px;}
+  h1{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;margin:0;}
+  .muted{color:var(--muted);font-size:12px;}
+  .brand{display:flex;align-items:center;gap:10px;justify-content:center;}
+  .logo-svg{display:block;width:82px;height:44px;filter:drop-shadow(0 0 12px rgba(212,215,220,.35));}
+  .login-box .logo-svg{width:150px;height:81px;}
+  .brand-text{display:flex;flex-direction:column;line-height:1;text-align:left;}
+    .brand .logo-sub{margin-top:3px;font-size:9px;font-weight:600;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);}
+  label{display:block;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 0 7px;font-weight:500;}
+  input[type=text], input[type=number], input[type=password], textarea{
+    width:100%;background:var(--bg);border:1.5px solid var(--line);color:var(--text);
+    padding:12px 14px;font-family:var(--font-body);font-size:16px;border-radius:8px;outline:none;
+    transition:all .2s var(--ease);
+  }
+  input:focus, textarea:focus{border-color:var(--accent);box-shadow:0 0 0 4px var(--accent-dim);}
+  textarea{resize:vertical;min-height:80px;line-height:1.6;}
+  input::placeholder, textarea::placeholder{color:var(--muted-dim);opacity:1;}
+  .swatches{display:flex;gap:10px;margin-top:6px;}
+  .swatch-opt{
+    width:34px;height:34px;border-radius:50%;border:2.5px solid transparent;cursor:pointer;
+    transition:all .2s var(--ease);position:relative;
+  }
+  .swatch-opt::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid transparent;transition:border-color .2s;}
+  .swatch-opt:active{transform:scale(.85);}
+  .swatch-opt.active{border-color:var(--accent);transform:scale(1.1);}
+  .swatch-opt.active::after{border-color:var(--accent-dim);}
+  .btn{
+    background:var(--grad);color:var(--on-grad);border:none;padding:14px 20px;
+    font-family:var(--font-body);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    border-radius:12px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #4A4D54, 0 12px 24px rgba(212,215,220,.25);
+    transition:all .2s var(--ease);position:relative;overflow:hidden;
+  }
+  .btn::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,.2),transparent);transform:translateX(-100%);transition:transform .5s;}
+  .btn:hover::before{transform:translateX(100%);}
+  .btn:active:not(:disabled){transform:translateY(3px);box-shadow:0 1px 0 #4A4D54;}
+  .btn:disabled{opacity:.5;cursor:default;box-shadow:none;}
+  .btn-outline{
+    background:transparent;color:var(--text);border:1.5px solid var(--line);
+    padding:14px 20px;font-family:var(--font-body);font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+    border-radius:8px;cursor:pointer;transition:all .2s var(--ease);font-weight:500;
+  }
+  .btn-outline:active{transform:scale(.95);}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+  .btn-danger{
+    background:transparent;color:var(--danger);border:1.5px solid var(--danger);
+    padding:9px 14px;font-family:var(--font-body);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    border-radius:8px;cursor:pointer;font-weight:500;
+    transition:all .2s var(--ease);
+  }
+  .btn-danger:active{transform:scale(.95);}
+  .btn-danger:hover{background:rgba(229,84,107,.1);}
+  .btn-icon-label{display:inline-flex;align-items:center;gap:6px;}
+  .row{display:flex;gap:10px;}
+  .row > *{flex:1;}
+  .badge-picker{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;}
+  .badge-opt{
+    flex:0 0 auto;background:transparent;border:1.5px solid var(--line);color:var(--muted);
+    padding:9px 15px;font-family:var(--font-body);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    border-radius:999px;cursor:pointer;font-weight:500;
+    transition:all .2s var(--ease);
+  }
+  .badge-opt:active{transform:scale(.92);}
+  .badge-opt:hover{color:var(--text);border-color:var(--muted-dim);}
+  .badge-opt.active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+  .price-old{color:var(--muted);text-decoration:line-through;margin-right:6px;}
+
+  .login-box{max-width:360px;margin:18vh auto 0;text-align:center;position:relative;z-index:1;}
+  .login-box .brand{justify-content:center;margin-bottom:8px;}
+  .login-box .brand-text{align-items:center;text-align:center;}
+  .login-card{
+    border:1.5px solid var(--line);background:var(--bg-elev);border-radius:16px;
+    padding:32px 28px 28px;margin-top:28px;box-shadow:0 24px 60px rgba(0,0,0,.5);
+    animation:cardIn .5s var(--ease) both;
+  }
+  .login-card label{text-align:left;}
+  .error{color:var(--danger);font-size:12px;margin-top:10px;min-height:16px;font-weight:500;}
+
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+  .logout{
+    color:var(--muted);font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+    background:none;border:1.5px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer;
+    transition:all .2s var(--ease);font-weight:500;
+  }
+  .logout:hover{color:var(--danger);border-color:var(--danger);background:rgba(229,84,107,.08);}
+
+  .stat-row{display:flex;gap:10px;margin-bottom:20px;}
+  .stat-card{
+    flex:1;border:1.5px solid var(--line);background:var(--bg-elev);border-radius:12px;
+    padding:14px 10px;transition:all .25s var(--ease);position:relative;overflow:hidden;
+  }
+  .stat-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--accent-dim),transparent);opacity:0;transition:opacity .3s;}
+  .stat-card:hover{border-color:rgba(212,215,220,.25);transform:translateY(-2px);}
+  .stat-card:hover::before{opacity:1;}
+  .stat-num{font-family:var(--font-body);font-size:26px;font-weight:600;color:var(--text);line-height:1;position:relative;}
+  .stat-label{font-size:9px;letter-spacing:.04em;white-space:nowrap;text-transform:uppercase;color:var(--muted);margin-top:6px;position:relative;}
+
+  .card{
+    background:var(--bg-elev);border:1.5px solid var(--line);border-radius:12px;
+    padding:16px;margin-bottom:14px;display:flex;gap:14px;
+    animation:cardIn .4s var(--ease) both;
+    transition:all .25s var(--ease);position:relative;overflow:hidden;
+  }
+  .card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--accent-dim),transparent);opacity:0;transition:opacity .3s;}
+  .card:hover{border-color:rgba(212,215,220,.25);transform:translateY(-2px);}
+  .card:hover::before{opacity:1;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+  .thumb{
+    width:68px;height:84px;border-radius:8px;flex:0 0 auto;background-color:var(--bg-elev-2);background-size:cover;background-position:center;
+    border:1px solid var(--line);transition:transform .3s var(--ease);
+  }
+  .card:hover .thumb{transform:scale(1.03);}
+  .card-body{flex:1;min-width:0;position:relative;z-index:1;}
+  .card-title{font-size:14px;font-family:var(--font-heading);font-weight:700;text-transform:uppercase;letter-spacing:.01em;}
+  .card-sub{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.5;}
+  .card-actions{display:flex;gap:8px;margin-top:12px;position:relative;z-index:1;}
+  .card-actions .btn-outline{padding:8px 14px;font-size:10px;}
+
+  .fab{
+    position:fixed;right:20px;bottom:24px;width:58px;height:58px;border-radius:50%;
+    background:var(--grad);color:var(--on-grad);font-size:28px;border:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;box-shadow:0 8px 30px rgba(212,215,220,.4);
+    transition:all .25s var(--ease);z-index:45;
+  }
+  .fab::before{content:"";position:absolute;inset:0;border-radius:50%;background:var(--accent);opacity:0;transition:opacity .3s;}
+  .fab:active{transform:scale(.9);}
+  .fab:hover{box-shadow:0 12px 40px rgba(212,215,220,.55);transform:translateY(-2px) scale(1.05);}
+  .fab:hover::before{opacity:.2;}
+
+  .overlay{
+    position:fixed;inset:0;background:rgba(0,0,0,.65);display:flex;align-items:flex-end;justify-content:center;z-index:50;
+    opacity:0;pointer-events:none;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+    transition:opacity .35s var(--ease);
+  }
+  .overlay.open{opacity:1;pointer-events:auto;}
+  .modal{
+    background:linear-gradient(180deg,#18181B,#0B0B0D);border-top:1.5px solid var(--line);border-radius:20px 20px 0 0;
+    max-width:640px;width:100%;max-height:90vh;overflow-y:auto;padding:20px 22px 32px;
+    transform:translateY(24px);transition:transform .38s var(--ease-sheet);
+    box-shadow:0 -24px 70px rgba(0,0,0,.55);
+  }
+  .overlay.open .modal{transform:translateY(0);}
+  .modal-title{font-family:var(--font-heading);font-size:20px;font-weight:800;text-transform:uppercase;margin-bottom:4px;}
+  .photo-preview{
+    width:100%;aspect-ratio:4/3;border-radius:8px;border:1.5px dashed var(--line);
+    background-size:cover;background-position:center;display:flex;align-items:center;justify-content:center;
+    color:var(--muted);font-size:12px;margin-top:6px;cursor:pointer;text-align:center;
+    transition:all .2s var(--ease);
+  }
+  .photo-preview:hover{border-color:var(--accent);color:var(--accent);}
+  .photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;}
+  .photo-tile{
+    position:relative;aspect-ratio:1/1;border-radius:8px;overflow:hidden;
+    background-size:cover;background-position:center;background-color:var(--bg-elev);
+    border:1.5px solid var(--line);animation:tileIn .3s var(--ease) both;
+    transition:all .2s var(--ease);
+  }
+  .photo-tile:hover{transform:scale(1.03);border-color:var(--accent);}
+  @keyframes tileIn{from{opacity:0;transform:scale(.88);}to{opacity:1;transform:scale(1);}}
+  .photo-tile{animation-timing-function:var(--ease-spring);}
+  .photo-tile.cover::after{
+    content:"обложка";position:absolute;left:0;right:0;bottom:0;
+    font-size:9px;letter-spacing:.06em;text-transform:uppercase;text-align:center;
+    color:var(--accent);background:rgba(5,5,6,.8);padding:4px 0;font-weight:500;
+  }
+  .photo-tile-remove{
+    position:absolute;top:5px;right:5px;width:22px;height:22px;border-radius:50%;
+    background:rgba(5,5,6,.8);border:1px solid rgba(255,255,255,.15);color:#fff;
+    font-size:12px;line-height:1;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .15s;
+  }
+  .photo-tile-remove:active{transform:scale(.82);}
+  .photo-tile-remove:hover{background:var(--danger);border-color:var(--danger);}
+  .photo-tile-move{
+    position:absolute;top:5px;width:22px;height:22px;border-radius:50%;
+    background:rgba(5,5,6,.8);border:1px solid rgba(255,255,255,.15);color:#fff;
+    font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;
+    cursor:pointer;transition:all .15s;
+  }
+  .photo-tile-move:active{transform:scale(.82);}
+  .photo-tile-move:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+  .photo-tile-move.left{left:5px;}
+  .photo-tile-move.right{left:30px;}
+  .photo-tile-move.disabled{opacity:.25;pointer-events:none;}
+  .photo-tile-add{
+    aspect-ratio:1/1;border-radius:8px;border:1.5px dashed var(--line);
+    display:flex;align-items:center;justify-content:center;flex-direction:column;gap:3px;
+    color:var(--muted);font-size:10px;text-align:center;cursor:pointer;
+    transition:all .2s var(--ease);
+  }
+  .photo-tile-add:active{transform:scale(.92);}
+  .photo-tile-add:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
+  .photo-tile-add span{font-size:22px;line-height:1;}
+  .photo-tile.uploading{display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:10px;}
+  .modal-actions{display:flex;gap:10px;margin-top:24px;}
+  .modal-actions > *{flex:1;}
+  .empty{text-align:center;color:var(--muted);font-size:13px;padding:48px 0;line-height:1.6;}
+  .toast-stack{
+    position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:60;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    pointer-events:none;max-width:calc(100% - 40px);width:max-content;
+  }
+  .toast{
+    pointer-events:auto;background:var(--accent);color:#fff;
+    padding:11px 20px;border-radius:999px;font-size:12px;max-width:100%;font-weight:600;
+    box-shadow:0 10px 30px rgba(0,0,0,.45);
+    opacity:0;transform:translateY(16px) scale(.94);
+    transition:all .5s var(--ease-spring);
+  }
+  .toast.toast-show{opacity:1;transform:translateY(0) scale(1);}
+  .toast.toast-hide{
+    opacity:0;transform:translateY(-8px) scale(.95);
+    transition:all .3s var(--ease);
+  }
+
+  .tabs{display:flex;gap:4px;margin:0 0 18px;background:var(--bg-elev);border:1.5px solid var(--line);border-radius:999px;padding:4px;}
+  .tab-btn{
+    flex:1;background:transparent;border:none;color:var(--muted);
+    padding:10px 4px;font-family:var(--font-body);font-size:10.5px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;
+    border-radius:999px;cursor:pointer;position:relative;
+    transition:all .2s var(--ease);font-weight:500;
+  }
+  .tab-btn:active{transform:scale(.95);}
+  .tab-btn.active{color:var(--on-grad);background:var(--grad);box-shadow:0 4px 16px rgba(212,215,220,.3);font-weight:600;}
+  .tab-badge{
+    display:inline-block;background:var(--gold);color:#0A0A0B;font-size:10px;
+    border-radius:999px;min-width:16px;height:16px;line-height:16px;text-align:center;
+    margin-left:4px;padding:0 4px;font-weight:800;
+  }
+
+  .order-card{
+    background:var(--bg-elev);border:1.5px solid var(--line);border-radius:12px;
+    padding:16px;margin-bottom:14px;animation:cardIn .4s var(--ease) both;
+    transition:all .25s var(--ease);position:relative;overflow:hidden;
+  }
+  .order-card::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,var(--accent-dim),transparent);opacity:0;transition:opacity .3s;}
+  .order-card:hover{border-color:rgba(212,215,220,.25);transform:translateY(-2px);}
+  .order-card:hover::before{opacity:1;}
+  .order-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;position:relative;z-index:1;}
+  .order-id{font-family:var(--font-heading);font-size:15px;font-weight:700;text-transform:uppercase;}
+  .order-date{font-size:11px;color:var(--muted);margin-top:3px;}
+  .status-badge{
+    font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:6px 11px;
+    border-radius:999px;border:1.5px solid;white-space:nowrap;font-weight:600;
+  }
+  .status-new{color:var(--gold);border-color:var(--gold);background:rgba(232,234,238,.1);}
+  .status-contacted{color:#B9BFC8;border-color:#B9BFC8;background:rgba(212,215,220,.12);}
+  .status-done,.status-accepted{color:var(--ok);border-color:var(--ok);background:rgba(127,217,154,.1);}
+  .status-cancelled,.status-rejected{color:var(--danger);border-color:var(--danger);background:rgba(229,84,107,.1);}
+  .order-items{font-size:12px;color:var(--muted);margin:12px 0;line-height:1.7;position:relative;z-index:1;}
+  .order-contact{font-size:13px;margin-top:8px;line-height:1.7;position:relative;z-index:1;}
+  .order-contact a{color:var(--accent);text-decoration:none;font-weight:500;}
+  .order-comment{font-size:12px;color:var(--muted);margin-top:10px;font-style:italic;position:relative;z-index:1;}
+  .order-actions{margin-top:14px;position:relative;z-index:1;}
+  .order-status-select{
+    width:100%;background:var(--bg);border:1.5px solid var(--line);color:var(--text);
+    font-family:var(--font-body);font-size:12px;padding:10px 12px;border-radius:8px;outline:none;
+    transition:all .2s var(--ease);cursor:pointer;
+  }
+  .order-status-select:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+  .msg-row{display:flex;gap:8px;margin-top:12px;position:relative;z-index:1;}
+  .msg-row input{flex:1;}
+  .msg-row .btn-outline{flex:0 0 auto;padding:0 18px;font-size:14px;height:45px;}
+  .no-chat{font-size:11px;color:var(--muted);margin-top:12px;position:relative;z-index:1;}
+
+  .reveal{opacity:0;transform:translateY(16px);transition:all .5s var(--ease);}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+
+  /* ---------- анимация логотипа HQM SHOP ---------- */
+  .bb-float{animation:bbFloat 4.2s ease-in-out infinite;}
+  @keyframes bbFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-2.5px);}}
+  .bb-glowp{animation:bbGlow 3s ease-in-out infinite;}
+  @keyframes bbGlow{0%,100%{opacity:.4;}50%{opacity:.95;}}
+  .bb-shine{animation:bbShine 4s ease-in-out infinite;}
+  @keyframes bbShine{0%,45%{transform:translateX(0);}100%{transform:translateX(230px);}}
+  .bb-spark{transform-box:fill-box;transform-origin:center;animation:bbSpark 2.6s ease-in-out infinite;opacity:0;}
+  @keyframes bbSpark{0%,100%{transform:scale(0) rotate(0);opacity:0;}50%{transform:scale(1) rotate(90deg);opacity:1;}}
+  @keyframes logoPop{0%{transform:scale(.55) rotate(-5deg);opacity:0;}60%{transform:scale(1.06) rotate(1deg);opacity:1;}100%{transform:scale(1) rotate(0);}}
+
+  /* ---------- остатки ---------- */
+  .stock-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--line);flex-wrap:wrap;position:relative;z-index:1;}
+  .stock-label{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  .stock-step{width:32px;height:32px;border-radius:10px;border:1.5px solid var(--line);background:var(--bg-elev);color:var(--text);font-size:18px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s var(--ease);padding:0;}
+  .stock-step:hover{border-color:var(--accent);}
+  .stock-step:active{transform:scale(.88);}
+  .stock-input[type=number]{width:62px;height:32px;padding:0 6px;text-align:center;font-family:var(--font-heading);font-weight:800;font-size:15px;border-radius:10px;-moz-appearance:textfield;}
+  .stock-input::-webkit-outer-spin-button,.stock-input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+  .stock-state{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;font-weight:700;color:var(--muted);margin-left:auto;}
+  .stock-state i{width:8px;height:8px;border-radius:50%;background:var(--muted-dim);}
+  .stock-state.ok{color:var(--lime);} .stock-state.ok i{background:var(--lime);box-shadow:0 0 8px rgba(127,217,154,.6);}
+  .stock-state.low{color:var(--gold);} .stock-state.low i{background:var(--gold);box-shadow:0 0 8px rgba(232,234,238,.6);}
+  .stock-state.last{color:var(--accent-2);} .stock-state.last i{background:var(--accent-2);box-shadow:0 0 8px rgba(212,215,220,.6);}
+  .stock-state.out{color:var(--danger);} .stock-state.out i{background:var(--danger);}
+
+  /* ---- Баллы покупателей ---- */
+  .loy-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+  .loy-stat{border:1.5px solid var(--line);background:linear-gradient(160deg,#18181B,#0E0E10);border-radius:14px;padding:12px 12px 11px;position:relative;overflow:hidden;}
+  .loy-stat::after{content:"";position:absolute;right:-18px;top:-18px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(212,215,220,.28),transparent 70%);}
+  .loy-stat b{display:block;font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--gold);line-height:1.1;letter-spacing:.02em;position:relative;}
+  .loy-stat span{display:block;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:5px;position:relative;}
+  .loy-search{position:relative;margin-bottom:14px;}
+  .loy-search input{padding-left:40px;border-radius:12px;}
+  .loy-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--muted-dim);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none;}
+  .loy-card{background:var(--bg-elev);border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;animation:cardIn .4s var(--ease) both;transition:border-color .25s var(--ease),transform .25s var(--ease);}
+  .loy-card:hover{border-color:rgba(212,215,220,.35);transform:translateY(-2px);}
+  .loy-top{display:flex;align-items:center;gap:12px;}
+  .loy-ava{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--on-grad);box-shadow:0 6px 18px rgba(212,215,220,.35);}
+  .loy-who{flex:1;min-width:0;}
+  .loy-name{font-family:var(--font-heading);font-weight:800;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .loy-id{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .loy-id a{color:var(--accent-soft);text-decoration:none;}
+  .loy-bal{text-align:right;flex:0 0 auto;}
+  .loy-bal b{display:block;font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1;color:var(--gold);letter-spacing:.02em;}
+  .loy-bal b small{font-size:13px;color:var(--muted);margin-left:3px;font-weight:500;}
+  .loy-bal span{display:block;font-size:11px;color:var(--muted);margin-top:4px;}
+  .loy-bal.zero b{color:var(--muted-dim);}
+  .loy-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;}
+  .loy-chip{font-size:10.5px;color:var(--muted);border:1px solid var(--line-soft);background:rgba(255,255,255,.04);border-radius:999px;padding:4px 10px;}
+  .loy-chip.hold{color:var(--gold);border-color:rgba(232,234,238,.3);background:rgba(232,234,238,.08);}
+  .loy-actions{display:flex;gap:8px;margin-top:12px;}
+  .loy-actions .btn{flex:1;padding:11px 14px;font-size:11px;}
+  .loy-hero{display:flex;align-items:center;gap:14px;margin:14px 0 4px;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:linear-gradient(160deg,#1C1C20,#0E0E10);}
+  .loy-hero .loy-bal{margin-left:auto;}
+  .loy-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;}
+  .loy-seg button{background:transparent;border:1.5px solid var(--line);color:var(--muted);border-radius:12px;padding:10px 4px 9px;font-family:var(--font-body);font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all .2s var(--ease);display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .loy-seg button i{font-style:normal;font-size:18px;line-height:1;font-family:var(--font-display);}
+  .loy-seg button:active{transform:scale(.94);}
+  .loy-seg button.active{color:#fff;border-color:var(--accent);background:var(--accent-dim);}
+  .loy-seg button.active.neg{color:var(--danger);border-color:var(--danger);background:rgba(229,84,107,.1);}
+  .loy-seg button.active.pos{color:var(--ok);border-color:var(--ok);background:rgba(127,217,154,.09);}
+  .loy-quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .loy-quick button{background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:6px 12px;font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);}
+  .loy-quick button:hover{border-color:var(--accent);color:var(--accent);}
+  .loy-quick button:active{transform:scale(.93);}
+  .loy-quick.reasons button{font-weight:500;font-size:11.5px;}
+  .loy-preview{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px dashed var(--line);font-family:var(--font-display);font-size:22px;letter-spacing:.02em;}
+  .loy-preview .arr{color:var(--muted-dim);font-size:16px;}
+  .loy-preview .old{color:var(--muted);}
+  .loy-preview .new{color:var(--gold);}
+  .loy-preview .new.up{color:var(--ok);} .loy-preview .new.down{color:var(--danger);}
+  .loy-preview small{font-family:var(--font-body);font-size:11px;color:var(--muted);}
+  .loy-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 0;text-transform:none;letter-spacing:0;color:var(--text);font-weight:500;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-size:13px;}
+  .loy-switch small{display:block;color:var(--muted);font-size:11px;margin-top:2px;}
+  .loy-switch input{display:none;}
+  .loy-switch .sw{flex:0 0 auto;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .2s var(--ease);}
+  .loy-switch .sw::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .25s var(--ease-spring);}
+  .loy-switch input:checked + .sw{background:var(--accent);}
+  .loy-switch input:checked + .sw::after{transform:translateX(18px);}
+  .loy-hist-title{margin-top:22px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;}
+  .loy-hist{margin-top:8px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;max-height:230px;overflow-y:auto;}
+  .loy-h-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line-soft);font-size:12px;}
+  .loy-h-row:last-child{border-bottom:none;}
+  .loy-h-d{flex:0 0 auto;min-width:54px;font-family:var(--font-display);font-size:16px;font-weight:600;}
+  .loy-h-d.pos{color:var(--ok);} .loy-h-d.neg{color:var(--danger);}
+  .loy-h-t{flex:1;min-width:0;line-height:1.35;}
+  .loy-h-t em{display:block;font-style:normal;color:var(--muted);font-size:10.5px;margin-top:1px;}
+  .loy-h-b{flex:0 0 auto;color:var(--muted);font-size:11px;}
+  .loy-h-tag{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-soft);border:1px solid rgba(212,215,220,.35);border-radius:999px;padding:1px 6px;margin-left:6px;vertical-align:1px;}
+  .loy-empty-h{padding:18px;text-align:center;color:var(--muted);font-size:12px;}
+  .order-loy-btn{margin-top:10px;width:100%;padding:11px 14px;font-size:11px;}
+
+  /* ===================== HQM SHOP · редизайн ===================== */
+  :root{--on-grad:#0A0A0B;--grad:linear-gradient(135deg,#F7F8FA 0%,#B9BDC4 48%,#E9EBEE 100%);--font-display:'Playfair Display','Times New Roman',Georgia,serif;--font-heading:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;}
+  body{font-variant-numeric:lining-nums;}
+  .logo-svg{display:none;}
+  .logo-txt{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:.05em;line-height:1;white-space:nowrap;
+    background:linear-gradient(180deg,#FFFFFF 0%,#D5D8DD 44%,#8B8F97 52%,#F1F2F4 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    filter:drop-shadow(0 0 10px rgba(255,255,255,.18));}
+  .logo-txt b{font-weight:400;margin:0 .3em;opacity:.55;}
+  .brand{gap:10px;}
+  .header-actions{gap:6px;}
+  #bagBtn{color:var(--on-grad);}
+  #bagBtn .icon-badge{background:#0A0A0B;color:#F4F4F5;border-color:#D4D7DC;}
+
+  header .logo-txt,.login-box .logo-txt{font-size:22px;}
+</style>
+</head>
+<body>
+<div id="loginView" class="login-box">
+  <div class="brand" style="flex-direction:column;gap:6px;">
+    <span class="logo-txt" role="img" aria-label="HQM SHOP">HQM<b>|</b>SHOP</span>
+    <div class="logo-sub">Панель администратора</div>
+  </div>
+  <div class="login-card">
+    <label>Пароль</label>
+    <input type="password" id="pwInput" placeholder="••••••••">
+    <button class="btn" id="loginBtn" style="width:100%;margin-top:14px;">Войти</button>
+    <div class="error" id="loginError"></div>
+  </div>
+</div>
+
+<div id="app" style="display:none;">
+  <div class="topbar">
+    <div class="brand">
+      <span class="logo-txt" role="img" aria-label="HQM SHOP">HQM<b>|</b>SHOP</span>
+      <div class="brand-text">
+        <h1 id="viewTitle">Товары</h1>
+      </div>
+    </div>
+    <button class="logout" id="logoutBtn">Выйти</button>
+  </div>
+  <div class="stat-row" id="statRow">
+    <div class="stat-card"><div class="stat-num" id="statProducts">0</div><div class="stat-label">Товаров</div></div>
+    <div class="stat-card"><div class="stat-num" id="statOrders">0</div><div class="stat-label">Заказов</div></div>
+    <div class="stat-card"><div class="stat-num" id="statNew">0</div><div class="stat-label">Новых</div></div>
+    <div class="stat-card"><div class="stat-num" id="statQuestionsNew">0</div><div class="stat-label">Вопросов</div></div>
+  </div>
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="products">Товары</button>
+    <button class="tab-btn" data-tab="orders">Заказы<span class="tab-badge" id="ordersBadge" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="questions">Вопросы<span class="tab-badge" id="questionsBadge" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="reviews">Отзывы<span class="tab-badge" id="reviewsBadge" style="display:none;"></span></button>
+    <button class="tab-btn" data-tab="promos">Промокоды</button>
+    <button class="tab-btn" data-tab="loyalty">Баллы</button>
+  </div>
+  <div class="muted" id="countLabel"></div>
+  <div id="list" style="margin-top:16px;"></div>
+</div>
+
+<button class="fab" id="addBtn" style="display:none;">+</button>
+
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Новый товар</div>
+    <div class="muted" id="modalSub">заполните карточку товара</div>
+
+    <label>Фото товара</label>
+    <div class="photo-grid" id="photoGrid"></div>
+    <div class="muted" style="margin-top:6px;">Можно добавить несколько фото и менять порядок стрелками. Первое фото — обложка товара.</div>
+    <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
+
+    <label>Без фото — цвет плашки</label>
+    <div class="swatches" id="swatchPicker"></div>
+
+    <label>Название</label>
+    <input type="text" id="fName" placeholder="PAFOS 20000">
+
+    <label>Подкатегория / бренд</label>
+    <input type="text" id="fSub" list="subList" placeholder="Vaporesso (необязательно)">
+    <datalist id="subList"></datalist>
+
+    <div class="row">
+      <div>
+        <label>Категория</label>
+        <input type="text" id="fCategory" placeholder="Поды">
+      </div>
+      <div>
+        <label>Цена, ₽</label>
+        <input type="number" id="fPrice" placeholder="1750">
+      </div>
+    </div>
+
+    <label>Старая цена, ₽ <span class="muted" style="text-transform:none;letter-spacing:0;">— необязательно, покажется зачёркнутой рядом с новой ценой</span></label>
+    <input type="number" id="fOldPrice" placeholder="2100">
+
+    <label>Остаток на складе, шт. <span class="muted" style="text-transform:none;letter-spacing:0;">— покупатели видят «Осталось N шт.»; пусто = учёт не ведётся</span></label>
+    <input type="number" id="fStock" min="0" inputmode="numeric" placeholder="25">
+
+    <label>Бейдж на карточке</label>
+    <div class="badge-picker" id="badgePicker">
+      <button type="button" class="badge-opt" data-badge="">Нет</button>
+      <button type="button" class="badge-opt" data-badge="hit">Хит</button>
+      <button type="button" class="badge-opt" data-badge="trend">В тренде</button>
+      <button type="button" class="badge-opt" data-badge="sale">Скидка</button>
+      <button type="button" class="badge-opt" data-badge="instock">В наличии</button>
+    </div>
+
+    <label>Вкусы / цвета <span class="muted" style="text-transform:none;letter-spacing:0;">— через запятую</span></label>
+    <input type="text" id="fSizes" placeholder="Виноград, Манго, Ледяная мята">
+
+    <label>Описание</label>
+    <textarea id="fDesc" placeholder="Ресурс, особенности, комплектация"></textarea>
+
+    <div class="error" id="formError"></div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" id="cancelBtn">Отмена</button>
+      <button class="btn" id="saveBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="promoOverlay">
+  <div class="modal">
+    <div class="modal-title" id="promoModalTitle">Новый промокод</div>
+    <div class="muted" id="promoModalSub">заполните параметры скидки</div>
+
+    <label>Код промокода</label>
+    <input type="text" id="pCode" placeholder="SALE10" style="text-transform:uppercase;">
+
+    <label>Тип скидки</label>
+    <div class="badge-picker" id="promoTypePicker">
+      <button type="button" class="badge-opt" data-type="percent">Процент от заказа</button>
+      <button type="button" class="badge-opt" data-type="fixed">Фиксированная сумма</button>
+    </div>
+
+    <div class="row">
+      <div>
+        <label id="pValueLabel">Значение, %</label>
+        <input type="number" id="pValue" placeholder="10">
+      </div>
+      <div>
+        <label>Мин. сумма заказа, ₽ <span class="muted" style="text-transform:none;letter-spacing:0;">— необязательно</span></label>
+        <input type="number" id="pMinTotal" placeholder="0">
+      </div>
+    </div>
+
+    <label>Лимит использований <span class="muted" style="text-transform:none;letter-spacing:0;">— необязательно, оставьте пустым для безлимита</span></label>
+    <input type="number" id="pMaxUses" placeholder="Без ограничений">
+
+    <label>Статус</label>
+    <div class="badge-picker" id="promoActivePicker">
+      <button type="button" class="badge-opt" data-active="1">Активен</button>
+      <button type="button" class="badge-opt" data-active="0">Выключен</button>
+    </div>
+
+    <div class="error" id="promoFormError"></div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" id="promoCancelBtn">Отмена</button>
+      <button class="btn" id="promoSaveBtn">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="loyOverlay">
+  <div class="modal">
+    <div class="modal-title">Управление баллами</div>
+    <div class="muted" id="loySub"></div>
+
+    <div class="loy-hero">
+      <div class="loy-ava" id="loyAva"></div>
+      <div class="loy-who">
+        <div class="loy-name" id="loyName"></div>
+        <div class="loy-id" id="loyMeta"></div>
+      </div>
+      <div class="loy-bal" id="loyBalBox"><b id="loyBal">0</b><span id="loyBalRub"></span></div>
+    </div>
+
+    <label>Действие</label>
+    <div class="loy-seg" id="loySeg">
+      <button type="button" class="pos" data-act="add"><i>＋</i>Начислить</button>
+      <button type="button" class="neg" data-act="subtract"><i>−</i>Списать</button>
+      <button type="button" data-act="set"><i>＝</i>Установить</button>
+      <button type="button" class="neg" data-act="reset"><i>✕</i>Обнулить</button>
+    </div>
+
+    <div id="loyAmountWrap">
+      <label id="loyAmountLabel">Количество баллов</label>
+      <input type="number" id="loyAmount" min="0" inputmode="numeric" placeholder="100">
+      <div class="loy-quick" id="loyQuick"></div>
+    </div>
+
+    <div class="loy-preview" id="loyPreview"></div>
+
+    <label>Причина <span class="muted" style="text-transform:none;letter-spacing:0;">— сохранится в истории</span></label>
+    <input type="text" id="loyNote" maxlength="200" placeholder="Например: отказ от покупки на месте">
+    <div class="loy-quick reasons" id="loyReasons"></div>
+
+    <label class="loy-switch" id="loyNotifyRow">
+      <span>Уведомить покупателя в Telegram<small>Он получит сообщение с новым балансом и причиной</small></span>
+      <input type="checkbox" id="loyNotify"><span class="sw"></span>
+    </label>
+
+    <div class="error" id="loyError"></div>
+
+    <div class="modal-actions">
+      <button class="btn-outline" id="loyCancel">Закрыть</button>
+      <button class="btn" id="loySave">Применить</button>
+    </div>
+
+    <div class="loy-hist-title">История баллов</div>
+    <div class="loy-hist" id="loyHist"></div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack"></div>
+
+<script>
+const SWATCHES = [
+  'radial-gradient(circle at 75% 15%,rgba(255,255,255,.16),transparent 45%),linear-gradient(155deg,#8E939B,#08080A 92%)',
+  'radial-gradient(circle at 75% 15%,rgba(255,255,255,.16),transparent 45%),linear-gradient(155deg,#C4C8CE,#1F1F23 92%)',
+  'radial-gradient(circle at 75% 15%,rgba(255,255,255,.16),transparent 45%),linear-gradient(155deg,#10606F,#07181E 92%)',
+  'radial-gradient(circle at 75% 15%,rgba(255,255,255,.16),transparent 45%),linear-gradient(155deg,#8E939B,#150A2B 92%)',
+  'radial-gradient(circle at 75% 15%,rgba(255,255,255,.16),transparent 45%),linear-gradient(155deg,#1F6E34,#08190D 92%)',
+  'radial-gradient(circle at 75% 15%,rgba(255,255,255,.16),transparent 45%),linear-gradient(155deg,#9A9BA2,#1A1A1E 92%)'
+];
+const fmt = n => Number(n||0).toLocaleString('ru-RU') + ' ₽';
+const BADGE_LABELS = { hit:'Хит', trend:'В тренде', sale:'Скидка', instock:'В наличии' };
+function priceLineHTML(p){
+  if (p.old_price && p.old_price > p.price){
+    return `<span class="price-old">${fmt(p.old_price)}</span>${fmt(p.price)}`;
+  }
+  return fmt(p.price);
+}
+
+let pwd = localStorage.getItem('sh_admin_pwd') || '';
+let products = [];
+let orders = [];
+let questions = [];
+let reviews = [];
+let promos = [];
+let currentTab = 'products';
+let editingId = null;
+let selectedSwatch = 0;
+let selectedBadge = '';
+let uploadedImages = [];
+let editingPromoId = null;
+let selectedPromoType = 'percent';
+let selectedPromoActive = true;
+
+async function api(path, opts={}){
+  const res = await fetch(path, {
+    ...opts,
+    headers: { ...(opts.headers||{}), 'X-Admin-Password': pwd }
+  });
+  if (!res.ok){
+    let msg = 'Ошибка запроса';
+    try { msg = (await res.json()).error || msg; } catch(e){}
+    throw new Error(msg);
+  }
+  return res.status === 204 ? null : res.json();
+}
+
+const toastStack = document.getElementById('toastStack');
+function showToast(msg){
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.textContent = msg;
+  toastStack.appendChild(el);
+  while (toastStack.children.length > 3) toastStack.removeChild(toastStack.firstChild);
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('toast-show')));
+
+  const dismiss = () => {
+    if (!el.isConnected) return;
+    el.classList.remove('toast-show');
+    el.classList.add('toast-hide');
+    el.addEventListener('transitionend', () => el.remove(), { once:true });
+    setTimeout(() => el.remove(), 380);
+  };
+  setTimeout(dismiss, 2200);
+}
+
+// --- Login ---------------------------------------------------------
+
+async function tryLogin(){
+  const val = document.getElementById('pwInput').value.trim();
+  if (!val) return;
+  pwd = val;
+  document.getElementById('loginError').textContent = '';
+  try {
+    await api('/api/admin/login', { method:'POST' });
+    localStorage.setItem('sh_admin_pwd', pwd);
+    enterApp();
+  } catch(e){
+    document.getElementById('loginError').textContent = 'Неверный пароль';
+  }
+}
+document.getElementById('loginBtn').onclick = tryLogin;
+document.getElementById('pwInput').addEventListener('keydown', e=>{ if(e.key==='Enter') tryLogin(); });
+
+document.getElementById('logoutBtn').onclick = () => {
+  localStorage.removeItem('sh_admin_pwd');
+  pwd = '';
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('addBtn').style.display = 'none';
+  document.getElementById('loginView').style.display = 'block';
+  document.getElementById('pwInput').value = '';
+};
+
+async function enterApp(){
+  document.getElementById('loginView').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('addBtn').style.display = 'flex';
+  await loadProducts();
+  await loadOrders();
+  await loadQuestions();
+  await loadReviews();
+  await loadPromos();
+}
+
+const TAB_TITLES = { products:'Товары', orders:'Заказы', questions:'Вопросы', reviews:'Отзывы', promos:'Промокоды', loyalty:'Баллы покупателей' };
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick = async () => {
+    if (btn.dataset.tab === currentTab) return;
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentTab = btn.dataset.tab;
+    document.getElementById('addBtn').style.display = (currentTab === 'products' || currentTab === 'promos') ? 'flex' : 'none';
+    document.getElementById('viewTitle').textContent = TAB_TITLES[currentTab] || '';
+    if (currentTab === 'products'){
+      await loadProducts();
+    } else if (currentTab === 'orders'){
+      await loadOrders();
+      renderOrders();
+    } else if (currentTab === 'questions'){
+      await loadQuestions();
+      renderQuestions();
+    } else if (currentTab === 'reviews'){
+      await loadReviews();
+      renderReviews();
+    } else if (currentTab === 'loyalty'){
+      try { await loadLoyalty(); } catch(e){ showToast(e.message); }
+      if (currentTab === 'loyalty') renderLoyalty();
+    } else {
+      await loadPromos();
+      renderPromos();
+    }
+  };
+});
+
+// --- List ------------------------------------------------------------
+
+function updateStats(){
+  document.getElementById('statProducts').textContent = products.length;
+  document.getElementById('statOrders').textContent = orders.length;
+  document.getElementById('statNew').textContent = orders.filter(o=>o.status==='new'||o.status==='contacted').length;
+  document.getElementById('statQuestionsNew').textContent = questions.filter(q=>q.status==='new').length;
+}
+
+async function loadProducts(){
+  products = await api('/api/admin/products');
+  renderList();
+  updateStats();
+}
+
+function renderList(){
+  const list = document.getElementById('list');
+  const lowN = products.filter(p => p.stock != null && p.stock > 0 && p.stock <= 3).length;
+  const outN = products.filter(p => p.stock != null && p.stock <= 0).length;
+  document.getElementById('countLabel').textContent = `${products.length} товар(ов)` + (lowN ? ` · заканчивается: ${lowN}` : '') + (outN ? ` · нет в наличии: ${outN}` : '');
+  if (products.length===0){
+    list.innerHTML = '<div class="empty">Пока нет ни одного товара — нажмите «+», чтобы добавить.</div>';
+    return;
+  }
+  list.innerHTML = products.map(p => {
+    const cover = (p.images && p.images.length) ? p.images[0] : p.image;
+    const photoCount = (p.images && p.images.length) ? p.images.length : (p.image ? 1 : 0);
+    const badgeTag = p.badge && BADGE_LABELS[p.badge] ? ` · <span style="color:var(--accent);">${BADGE_LABELS[p.badge]}</span>` : '';
+    return `
+    <div class="card">
+      <div class="thumb" style="${cover ? `background-image:url('${cover}')` : `background:${SWATCHES[p.swatch % SWATCHES.length]}`}"></div>
+      <div class="card-body">
+        <div class="card-title">${p.name || '(без названия)'}</div>
+        <div class="card-sub">${p.category || '—'}${p.subcategory ? ' › ' + p.subcategory : ''} · ${priceLineHTML(p)}${badgeTag}</div>
+        <div class="card-sub">Вкусы / цвета: ${(p.sizes||[]).join(', ')}</div>
+        <div class="card-sub">${photoCount ? `Фото: ${photoCount}` : 'Без фото'}</div>
+        ${stockRowHTML(p)}
+        <div class="card-actions">
+          <button class="btn-outline btn-icon-label" data-edit="${p.id}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>Изменить</button>
+          <button class="btn-danger btn-icon-label" data-del="${p.id}"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h16"/><path d="M6 7l1 13a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-13"/><path d="M9 7V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3"/></svg>Удалить</button>
+        </div>
+      </div>
+    </div>
+  `;
+  }).join('');
+  list.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openModal(Number(b.dataset.edit)));
+  list.querySelectorAll('[data-stock-step]').forEach(b => b.onclick = () => {
+    const p = products.find(x => x.id === Number(b.dataset.id));
+    if (!p) return;
+    const cur = p.stock == null ? 0 : p.stock;
+    setStock(p.id, Math.max(0, cur + Number(b.dataset.stockStep)));
+  });
+  list.querySelectorAll('.stock-input').forEach(inp => inp.onchange = () => {
+    const raw = inp.value.trim();
+    setStock(Number(inp.dataset.id), raw === '' ? null : Math.max(0, Math.floor(Number(raw)) || 0));
+  });
+  list.querySelectorAll('[data-del]').forEach(b => b.onclick = () => deleteProduct(Number(b.dataset.del)));
+}
+
+function stockState(stock){
+  if (stock == null) return { cls:'', text:'учёт не ведётся' };
+  if (stock <= 0) return { cls:'out', text:'нет в наличии' };
+  if (stock <= 3) return { cls:'last', text:'заканчивается' };
+  if (stock <= 10) return { cls:'low', text:'мало' };
+  return { cls:'ok', text:'достаточно' };
+}
+
+function stockRowHTML(p){
+  const st = stockState(p.stock);
+  return `<div class="stock-row">
+    <span class="stock-label">Остаток</span>
+    <button class="stock-step" type="button" data-stock-step="-1" data-id="${p.id}" aria-label="Минус один">−</button>
+    <input class="stock-input" type="number" min="0" inputmode="numeric" placeholder="∞" data-id="${p.id}" value="${p.stock == null ? '' : p.stock}">
+    <button class="stock-step" type="button" data-stock-step="1" data-id="${p.id}" aria-label="Плюс один">+</button>
+    <span class="stock-state ${st.cls}"><i></i>${st.text}</span>
+  </div>`;
+}
+
+async function setStock(id, value){
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  const prev = p.stock;
+  p.stock = value;                 // сразу показываем новое значение
+  renderList();
+  try {
+    const updated = await api(`/api/admin/products/${id}`, {
+      method:'PUT', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ stock: value })
+    });
+    products = products.map(x => x.id === id ? updated : x);
+    renderList();
+  } catch(e){
+    p.stock = prev;
+    renderList();
+    showToast(e.message);
+  }
+}
+
+async function deleteProduct(id){
+  if (!confirm('Удалить этот товар?')) return;
+  try {
+    await api(`/api/admin/products/${id}`, { method:'DELETE' });
+    products = products.filter(p=>p.id!==id);
+    renderList();
+    updateStats();
+    showToast('Товар удалён');
+  } catch(e){ showToast(e.message); }
+}
+
+// --- Orders ------------------------------------------------------------
+
+function statusLabel(s){
+  return { new:'В обработке', contacted:'В обработке (связались)', accepted:'Принят', done:'Выполнен', rejected:'Отклонён', cancelled:'Отменён' }[s] || s;
+}
+
+function refreshOrdersBadge(){
+  const badge = document.getElementById('ordersBadge');
+  const newCount = orders.filter(o=>o.status==='new'||o.status==='contacted').length;
+  if (newCount>0){ badge.style.display='inline-block'; badge.textContent = newCount; }
+  else badge.style.display='none';
+}
+
+async function loadOrders(){
+  orders = await api('/api/admin/orders');
+  refreshOrdersBadge();
+  updateStats();
+}
+
+function renderOrders(){
+  document.getElementById('countLabel').textContent = `${orders.length} заказ(ов)`;
+  const list = document.getElementById('list');
+  if (orders.length===0){
+    list.innerHTML = '<div class="empty">Пока нет заказов.</div>';
+    return;
+  }
+  list.innerHTML = orders.map(o => `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-id">HQ-${o.id}</div>
+          <div class="order-date">${new Date(o.created_at).toLocaleString('ru-RU')}</div>
+        </div>
+        <span class="status-badge status-${o.status}">${statusLabel(o.status)}</span>
+      </div>
+      <div class="order-items">${(o.items||[]).map(i=>`${i.name} (${i.size||'—'}) × ${i.qty}`).join('<br>')}</div>
+      ${o.delivery ? `<div class="card-sub" style="color:var(--text);line-height:1.7;">${o.delivery.mode==='delivery' ? '🚚 Доставка: '+(o.delivery.address||'—')+' (+'+fmt(o.delivery.fee||0)+')' : '📍 Самовывоз: '+(o.delivery.point||'—')}<br>${o.delivery.asap ? '⚡ Как можно скорее' : '🕒 '+(o.delivery.date||'').split('-').reverse().slice(0,2).join('.')+' в '+(o.delivery.time||'')}</div>` : ''}
+      ${o.discount ? `<div class="card-sub">Промокод: ${o.promo_code} (−${fmt(o.discount)}) · Сумма товаров: ${fmt(o.subtotal)}</div>` : ''}
+      <div class="card-sub">Итого: ${fmt(o.total)}</div>
+      <div class="order-contact">
+        👤 ${o.name}<br>
+        📞 <a href="tel:${o.phone}">${o.phone}</a>${o.customer_username ? ` · <a href="https://t.me/${o.customer_username}" target="_blank" rel="noopener">@${o.customer_username}</a>` : ''}
+      </div>
+      ${o.comment ? `<div class="order-comment">«${o.comment}»</div>` : ''}
+      <div class="order-actions">
+        <select class="order-status-select" data-status="${o.id}">
+          ${['new','contacted','accepted','done','rejected','cancelled'].map(s=>`<option value="${s}" ${s===o.status?'selected':''}>${statusLabel(s)}</option>`).join('')}
+        </select>
+      </div>
+      ${o.customer_chat_id
+        ? `<div class="msg-row">
+             <input type="text" class="text-input" placeholder="Написать клиенту в Telegram…" data-msg-input="${o.id}">
+             <button class="btn-outline" data-msg-send="${o.id}">➤</button>
+           </div>`
+        : `<div class="no-chat">Клиент открыл магазин вне Telegram — написать через бота нельзя, свяжитесь по телефону.</div>`}
+      ${o.customer_chat_id ? `<button class="btn-outline order-loy-btn" data-loy-for="${o.customer_chat_id}">⭐ Баллы клиента${o.points_spent ? ` · списано в заказе ${o.points_spent} б.` : ''}</button>` : ''}
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-status]').forEach(sel=>{
+    sel.onchange = () => updateOrderStatus(Number(sel.dataset.status), sel.value);
+  });
+  list.querySelectorAll('[data-loy-for]').forEach(btn=>{
+    btn.onclick = () => openLoyaltyFor(Number(btn.dataset.loyFor));
+  });
+  list.querySelectorAll('[data-msg-send]').forEach(btn=>{
+    btn.onclick = () => sendOrderMessage(Number(btn.dataset.msgSend));
+  });
+  list.querySelectorAll('[data-msg-input]').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{
+      if (e.key==='Enter') sendOrderMessage(Number(inp.dataset.msgInput));
+    });
+  });
+}
+
+async function updateOrderStatus(id, status){
+  try {
+    const updated = await api(`/api/admin/orders/${id}/status`, {
+      method:'PUT', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ status })
+    });
+    orders = orders.map(o => o.id===id ? updated : o);
+    refreshOrdersBadge();
+    updateStats();
+    renderOrders();
+    showToast('Статус обновлён');
+    api('/api/admin/products').then(r => { products = r; updateStats(); }).catch(() => {});   // отмена/возобновление заказа меняет остатки
+  } catch(e){ showToast(e.message); }
+}
+
+async function sendOrderMessage(id){
+  const input = document.querySelector(`[data-msg-input="${id}"]`);
+  const text = input.value.trim();
+  if (!text) return;
+  input.disabled = true;
+  try {
+    const updated = await api(`/api/admin/orders/${id}/message`, {
+      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ text })
+    });
+    orders = orders.map(o => o.id===id ? updated : o);
+    refreshOrdersBadge();
+    renderOrders();
+    showToast('Сообщение отправлено клиенту');
+  } catch(e){
+    showToast(e.message);
+    input.disabled = false;
+  }
+}
+
+// --- Questions -----------------------------------------------------
+
+function questionStatusLabel(s){
+  return { new:'Новый', answered:'Отвечен' }[s] || s;
+}
+
+function refreshQuestionsBadge(){
+  const badge = document.getElementById('questionsBadge');
+  const newCount = questions.filter(q=>q.status==='new').length;
+  if (newCount>0){ badge.style.display='inline-block'; badge.textContent = newCount; }
+  else badge.style.display='none';
+}
+
+async function loadQuestions(){
+  questions = await api('/api/admin/questions');
+  refreshQuestionsBadge();
+  updateStats();
+}
+
+function renderQuestions(){
+  document.getElementById('countLabel').textContent = `${questions.length} вопрос(ов)`;
+  const list = document.getElementById('list');
+  if (questions.length===0){
+    list.innerHTML = '<div class="empty">Пока нет вопросов от покупателей.</div>';
+    return;
+  }
+  list.innerHTML = questions.map(q => `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-id">${q.product_name || 'Товар'}</div>
+          <div class="order-date">${new Date(q.created_at).toLocaleString('ru-RU')}</div>
+        </div>
+        <span class="status-badge status-${q.status==='answered' ? 'done' : 'new'}">${questionStatusLabel(q.status)}</span>
+      </div>
+      <div class="order-items">${q.question}</div>
+      ${q.customer_username ? `<div class="order-contact">👤 <a href="https://t.me/${q.customer_username}" target="_blank" rel="noopener">@${q.customer_username}</a></div>` : ''}
+      ${(q.messages||[]).length ? `<div class="order-comment">Ответ: «${q.messages[q.messages.length-1].text}»</div>` : ''}
+      ${q.customer_chat_id
+        ? `<div class="msg-row">
+             <input type="text" class="text-input" placeholder="Ответить клиенту в Telegram…" data-qmsg-input="${q.id}">
+             <button class="btn-outline" data-qmsg-send="${q.id}">➤</button>
+           </div>`
+        : `<div class="no-chat">Клиент открыл магазин вне Telegram — ответить через бота нельзя.</div>`}
+    </div>
+  `).join('');
+
+  list.querySelectorAll('[data-qmsg-send]').forEach(btn=>{
+    btn.onclick = () => sendQuestionMessage(Number(btn.dataset.qmsgSend));
+  });
+  list.querySelectorAll('[data-qmsg-input]').forEach(inp=>{
+    inp.addEventListener('keydown', e=>{
+      if (e.key==='Enter') sendQuestionMessage(Number(inp.dataset.qmsgInput));
+    });
+  });
+}
+
+async function sendQuestionMessage(id){
+  const input = document.querySelector(`[data-qmsg-input="${id}"]`);
+  const text = input.value.trim();
+  if (!text) return;
+  input.disabled = true;
+  try {
+    const updated = await api(`/api/admin/questions/${id}/message`, {
+      method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ text })
+    });
+    questions = questions.map(q => q.id===id ? updated : q);
+    refreshQuestionsBadge();
+    updateStats();
+    renderQuestions();
+    showToast('Ответ отправлен клиенту');
+  } catch(e){
+    showToast(e.message);
+    input.disabled = false;
+  }
+}
+
+// --- Баллы покупателей -------------------------------------------------
+let loyalty = { customers: [], point_value: 0.5, total_points: 0, with_points: 0 };
+let loyQuery = '';
+let loyCurrent = null;       // клиент, открытый в окне управления
+let loyAction = 'subtract';
+
+const nfmt = n => Number(n||0).toLocaleString('ru-RU');
+const pointsRub = n => nfmt(Math.round(n * (loyalty.point_value || 0.5) * 100) / 100) + ' ₽';
+
+async function loadLoyalty(){
+  loyalty = await api('/api/admin/loyalty');
+}
+
+function loyCustomerName(c){
+  return c.name || (c.username ? '@' + c.username : 'Покупатель ' + c.telegram_id);
+}
+
+function renderLoyalty(){
+  document.getElementById('countLabel').textContent = `${loyalty.customers.length} покупател(ей)`;
+  const list = document.getElementById('list');
+  list.innerHTML = `
+    <div class="loy-summary">
+      <div class="loy-stat"><b>${nfmt(loyalty.total_points)}</b><span>Баллов у клиентов</span></div>
+      <div class="loy-stat"><b>${nfmt(loyalty.with_points)}</b><span>Клиентов с баллами</span></div>
+      <div class="loy-stat"><b>${pointsRub(loyalty.total_points)}</b><span>Это в рублях</span></div>
+    </div>
+    <div class="loy-search">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input type="text" id="loySearch" placeholder="Поиск: имя, @username, телефон, Telegram ID" value="${escR(loyQuery)}">
+    </div>
+    <div id="loyList"></div>`;
+  document.getElementById('loySearch').oninput = e => { loyQuery = e.target.value; renderLoyList(); };
+  renderLoyList();
+}
+
+function renderLoyList(){
+  const q = loyQuery.trim().toLowerCase().replace(/^@/, '');
+  const items = loyalty.customers.filter(c => !q ||
+    [c.name, c.username, c.phone, String(c.telegram_id)].some(v => String(v||'').toLowerCase().includes(q)));
+  const box = document.getElementById('loyList');
+  if (!items.length){
+    box.innerHTML = `<div class="empty">${loyalty.customers.length ? 'Никого не найдено.' : 'Пока нет покупателей с баллами — они появятся после первого заказа из Telegram.'}</div>`;
+    return;
+  }
+  box.innerHTML = items.map(c => {
+    const nm = loyCustomerName(c);
+    return `
+    <div class="loy-card">
+      <div class="loy-top">
+        <div class="loy-ava">${escR(nm.replace('@','').charAt(0).toUpperCase() || '?')}</div>
+        <div class="loy-who">
+          <div class="loy-name">${escR(nm)}</div>
+          <div class="loy-id">${c.username ? `<a href="https://t.me/${escR(c.username)}" target="_blank" rel="noopener">@${escR(c.username)}</a> · ` : ''}ID ${c.telegram_id}${c.phone ? ' · ' + escR(c.phone) : ''}</div>
+        </div>
+        <div class="loy-bal ${c.points_balance ? '' : 'zero'}"><b>${nfmt(c.points_balance)}<small>б.</small></b><span>≈ ${pointsRub(c.points_balance)}</span></div>
+      </div>
+      <div class="loy-chips">
+        <span class="loy-chip">Заказов: ${c.orders}</span>
+        <span class="loy-chip">Выкуплено на ${fmt(c.total_spent)}</span>
+        ${c.reserved ? `<span class="loy-chip hold">В резерве по заказам: ${nfmt(c.reserved)} б.</span>` : ''}
+      </div>
+      <div class="loy-actions">
+        <button class="btn" data-loy-open="${c.telegram_id}">Управлять баллами</button>
+        ${c.points_balance ? `<button class="btn-danger" data-loy-reset="${c.telegram_id}">Обнулить</button>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  box.querySelectorAll('[data-loy-open]').forEach(b => b.onclick = () => openLoyModal(Number(b.dataset.loyOpen)));
+  box.querySelectorAll('[data-loy-reset]').forEach(b => b.onclick = () => openLoyModal(Number(b.dataset.loyReset), 'reset'));
+}
+
+const LOY_REASONS = {
+  add: ['Бонус от магазина', 'Компенсация', 'Ошибка списания'],
+  subtract: ['Отказ от покупки на месте', 'Заказ не выкуплен', 'Ошибочное начисление'],
+  set: ['Исправление баланса', 'Сверка баланса'],
+  reset: ['Отказ от покупки на месте', 'Заказ не выкуплен', 'Мошенничество / злоупотребление']
+};
+const LOY_AMOUNTS = { add: [50, 100, 250, 500], subtract: [50, 100, 250, 500], set: [0, 100, 500] };
+
+function loyNewBalance(){
+  const old = loyCurrent ? loyCurrent.points_balance : 0;
+  const amt = Math.max(0, Math.floor(Number(document.getElementById('loyAmount').value) || 0));
+  if (loyAction === 'add') return old + amt;
+  if (loyAction === 'subtract') return Math.max(0, old - amt);
+  if (loyAction === 'set') return amt;
+  return 0;
+}
+
+function renderLoyForm(){
+  const act = loyAction;
+  document.querySelectorAll('#loySeg button').forEach(b => b.classList.toggle('active', b.dataset.act === act));
+  document.getElementById('loyAmountWrap').style.display = act === 'reset' ? 'none' : 'block';
+  document.getElementById('loyAmountLabel').textContent = act === 'set' ? 'Новый баланс, баллов' : 'Количество баллов';
+
+  const quick = document.getElementById('loyQuick');
+  const old = loyCurrent ? loyCurrent.points_balance : 0;
+  const amounts = (LOY_AMOUNTS[act] || []).slice();
+  quick.innerHTML = amounts.map(a => `<button type="button" data-q="${a}">${act === 'add' ? '+' : act === 'subtract' ? '−' : ''}${a}</button>`).join('')
+    + (act === 'subtract' && old ? `<button type="button" data-q="${old}">Все (${nfmt(old)})</button>` : '');
+  quick.querySelectorAll('button').forEach(b => b.onclick = () => { document.getElementById('loyAmount').value = b.dataset.q; renderLoyPreview(); });
+
+  const reasons = document.getElementById('loyReasons');
+  reasons.innerHTML = (LOY_REASONS[act] || []).map(r => `<button type="button">${r}</button>`).join('');
+  reasons.querySelectorAll('button').forEach(b => b.onclick = () => { document.getElementById('loyNote').value = b.textContent; });
+
+  renderLoyPreview();
+}
+
+function renderLoyPreview(){
+  const old = loyCurrent ? loyCurrent.points_balance : 0;
+  const nw = loyNewBalance();
+  const cls = nw > old ? 'up' : nw < old ? 'down' : '';
+  const d = nw - old;
+  document.getElementById('loyPreview').innerHTML =
+    `<span class="old">${nfmt(old)}</span><span class="arr">➜</span><span class="new ${cls}">${nfmt(nw)}</span>` +
+    `<small>${d ? (d > 0 ? '+' : '−') + nfmt(Math.abs(d)) + ' б.' : 'без изменений'}</small>`;
+}
+document.getElementById('loyAmount').addEventListener('input', renderLoyPreview);
+document.querySelectorAll('#loySeg button').forEach(b => b.onclick = () => { loyAction = b.dataset.act; renderLoyForm(); });
+
+function fillLoyHero(){
+  const c = loyCurrent;
+  const nm = loyCustomerName(c);
+  document.getElementById('loyAva').textContent = nm.replace('@','').charAt(0).toUpperCase() || '?';
+  document.getElementById('loyName').textContent = nm;
+  document.getElementById('loyMeta').textContent = (c.username ? '@' + c.username + ' · ' : '') + 'ID ' + c.telegram_id;
+  document.getElementById('loySub').textContent = c.reserved ? `В резерве по незавершённым заказам: ${nfmt(c.reserved)} б.` : 'списание, начисление и обнуление баланса';
+  document.getElementById('loyBal').innerHTML = `${nfmt(c.points_balance)}<small>б.</small>`;
+  document.getElementById('loyBalRub').textContent = '≈ ' + pointsRub(c.points_balance);
+  document.getElementById('loyBalBox').classList.toggle('zero', !c.points_balance);
+}
+
+function openLoyModal(tgId, action){
+  const c = loyalty.customers.find(x => x.telegram_id === tgId);
+  if (!c) return;
+  loyCurrent = { ...c };
+  loyAction = action || 'subtract';
+  document.getElementById('loyError').textContent = '';
+  document.getElementById('loyAmount').value = '';
+  document.getElementById('loyNote').value = '';
+  document.getElementById('loyNotify').checked = false;
+  fillLoyHero();
+  renderLoyForm();
+  loadLoyHistory(tgId);
+  document.getElementById('loyOverlay').classList.add('open');
+}
+
+function closeLoyModal(){ document.getElementById('loyOverlay').classList.remove('open'); loyCurrent = null; }
+document.getElementById('loyCancel').onclick = closeLoyModal;
+document.getElementById('loyOverlay').addEventListener('click', e => { if (e.target.id === 'loyOverlay') closeLoyModal(); });
+
+async function loadLoyHistory(tgId){
+  const box = document.getElementById('loyHist');
+  box.innerHTML = '<div class="loy-empty-h">Загрузка…</div>';
+  try {
+    const rows = await api(`/api/admin/loyalty/${tgId}/history`);
+    if (!loyCurrent || loyCurrent.telegram_id !== tgId) return;
+    if (!rows.length){ box.innerHTML = '<div class="loy-empty-h">Операций пока нет.</div>'; return; }
+    box.innerHTML = rows.map(r => `
+      <div class="loy-h-row">
+        <div class="loy-h-d ${r.delta > 0 ? 'pos' : 'neg'}">${r.delta > 0 ? '+' : '−'}${nfmt(Math.abs(r.delta))}</div>
+        <div class="loy-h-t">${escR(r.note || (r.kind === 'admin' ? 'Корректировка' : 'Заказ'))}${r.kind === 'admin' ? '<span class="loy-h-tag">админ</span>' : ''}
+          <em>${r.at ? new Date(r.at).toLocaleString('ru-RU') : ''}</em></div>
+        <div class="loy-h-b">→ ${nfmt(r.balance_after)}</div>
+      </div>`).join('');
+  } catch(e){
+    box.innerHTML = `<div class="loy-empty-h">${escR(e.message)}</div>`;
+  }
+}
+
+document.getElementById('loySave').onclick = async () => {
+  if (!loyCurrent) return;
+  const errEl = document.getElementById('loyError');
+  errEl.textContent = '';
+  const amount = Math.floor(Number(document.getElementById('loyAmount').value) || 0);
+  if (loyAction !== 'reset'){
+    if (loyAction !== 'set' && amount <= 0){ errEl.textContent = 'Укажите количество баллов'; return; }
+    if (loyAction === 'set' && document.getElementById('loyAmount').value === ''){ errEl.textContent = 'Укажите новый баланс'; return; }
+  }
+  const nw = loyNewBalance();
+  if (nw === loyCurrent.points_balance){ errEl.textContent = 'Баланс не изменится'; return; }
+  if (loyAction === 'reset' || nw === 0){
+    if (!confirm(`Обнулить баллы клиента «${loyCustomerName(loyCurrent)}»? Сейчас на балансе ${nfmt(loyCurrent.points_balance)} б.`)) return;
+  }
+  const btn = document.getElementById('loySave');
+  btn.disabled = true;
+  try {
+    const res = await api(`/api/admin/loyalty/${loyCurrent.telegram_id}/adjust`, {
+      method:'POST', headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ action: loyAction, amount, note: document.getElementById('loyNote').value.trim(),
+                             notify: document.getElementById('loyNotify').checked })
+    });
+    const c = loyalty.customers.find(x => x.telegram_id === res.telegram_id);
+    if (c) c.points_balance = res.points_balance;
+    loyalty.customers.sort((a,b) => b.points_balance - a.points_balance || b.orders - a.orders);
+    loyalty.total_points = loyalty.customers.reduce((s,x) => s + x.points_balance, 0);
+    loyalty.with_points = loyalty.customers.filter(x => x.points_balance > 0).length;
+    if (currentTab === 'loyalty') renderLoyalty();
+    const d = res.delta;
+    showToast(d > 0 ? `Начислено ${nfmt(d)} б.` : d < 0 ? `Списано ${nfmt(-d)} б.` : 'Без изменений');
+    if (document.getElementById('loyNotify').checked && !res.notified) showToast('Баллы изменены, но сообщение клиенту не доставлено');
+    closeLoyModal();
+  } catch(e){
+    errEl.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+async function openLoyaltyFor(tgId){
+  const tabBtn = document.querySelector('.tab-btn[data-tab="loyalty"]');
+  if (currentTab !== 'loyalty') tabBtn.click();
+  await new Promise(r => setTimeout(r, 0));
+  try { await loadLoyalty(); renderLoyalty(); } catch(e){ showToast(e.message); return; }
+  if (!loyalty.customers.some(x => x.telegram_id === tgId)) { showToast('У клиента пока нет записи о баллах'); return; }
+  openLoyModal(tgId);
+}
+
+// --- Reviews -------------------------------------------------------
+
+function escR(str){
+  return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function refreshReviewsBadge(){
+  const badge = document.getElementById('reviewsBadge');
+  const pending = reviews.filter(r => !r.is_approved).length;
+  if (pending > 0){ badge.style.display = 'inline-block'; badge.textContent = pending; }
+  else badge.style.display = 'none';
+}
+
+async function loadReviews(){
+  try {
+    reviews = await api('/api/admin/reviews');
+  } catch(e){
+    reviews = [];
+    showToast(e.message);
+  }
+  refreshReviewsBadge();
+}
+
+function renderReviews(){
+  const pending = reviews.filter(r => !r.is_approved).length;
+  document.getElementById('countLabel').textContent =
+    `${reviews.length} отзыв(ов)` + (pending ? ` · на модерации: ${pending}` : '');
+  const list = document.getElementById('list');
+  if (reviews.length === 0){
+    list.innerHTML = '<div class="empty">Пока нет отзывов от покупателей.</div>';
+    return;
+  }
+  list.innerHTML = reviews.map(r => {
+    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+    return `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-id">${escR(r.author_name)}</div>
+          <div class="order-date">${new Date(r.created_at).toLocaleString('ru-RU')} · ID ${escR(r.telegram_id)}</div>
+        </div>
+        <span class="status-badge status-${r.is_approved ? 'done' : 'new'}">${r.is_approved ? 'Опубликован' : 'На модерации'}</span>
+      </div>
+      <div class="order-items"><span style="color:var(--gold);letter-spacing:.12em;">${stars}</span> (${r.rating}/5)</div>
+      <div class="order-comment" style="white-space:pre-wrap;overflow-wrap:anywhere;">${escR(r.text)}</div>
+      <div class="card-actions" style="margin-top:12px;">
+        <button class="btn-danger" data-review-del="${r.id}">Удалить</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  list.querySelectorAll('[data-review-del]').forEach(btn => {
+    btn.onclick = () => deleteReview(Number(btn.dataset.reviewDel));
+  });
+}
+
+async function deleteReview(id){
+  const r = reviews.find(x => x.id === id);
+  if (!confirm(`Удалить отзыв${r ? ' от «' + r.author_name + '»' : ''}?`)) return;
+  try {
+    await api(`/api/admin/reviews/${id}`, { method:'DELETE' });
+    reviews = reviews.filter(x => x.id !== id);
+    refreshReviewsBadge();
+    renderReviews();
+    showToast('Отзыв удалён');
+  } catch(e){
+    showToast(e.message);
+  }
+}
+
+// --- Promos ----------------------------------------------------------
+
+function promoValueLabel(p){
+  return p.type === 'percent' ? `−${p.value}%` : `−${fmt(p.value)}`;
+}
+
+async function loadPromos(){
+  promos = await api('/api/admin/promos');
+}
+
+function renderPromos(){
+  document.getElementById('countLabel').textContent = `${promos.length} промокод(ов)`;
+  const list = document.getElementById('list');
+  if (promos.length===0){
+    list.innerHTML = '<div class="empty">Пока нет ни одного промокода — нажмите «+», чтобы создать.</div>';
+    return;
+  }
+  list.innerHTML = promos.map(p => {
+    const usageText = p.max_uses ? `${p.used_count||0} / ${p.max_uses}` : `${p.used_count||0} (без лимита)`;
+    return `
+    <div class="order-card">
+      <div class="order-head">
+        <div>
+          <div class="order-id">${p.code}</div>
+          <div class="order-date">${promoValueLabel(p)}${p.min_total ? ` · от ${fmt(p.min_total)}` : ''}</div>
+        </div>
+        <span class="status-badge ${p.active ? 'status-done' : 'status-cancelled'}">${p.active ? 'Активен' : 'Выключен'}</span>
+      </div>
+      <div class="card-sub">Использован: ${usageText}</div>
+      <div class="card-actions" style="margin-top:11px;">
+        <button class="btn-outline" data-promo-edit="${p.id}">Изменить</button>
+        <button class="btn-outline" data-promo-toggle="${p.id}">${p.active ? 'Выключить' : 'Включить'}</button>
+        <button class="btn-danger" data-promo-del="${p.id}">Удалить</button>
+      </div>
+    </div>
+  `;
+  }).join('');
+
+  list.querySelectorAll('[data-promo-edit]').forEach(b => b.onclick = () => openPromoModal(Number(b.dataset.promoEdit)));
+  list.querySelectorAll('[data-promo-del]').forEach(b => b.onclick = () => deletePromo(Number(b.dataset.promoDel)));
+  list.querySelectorAll('[data-promo-toggle]').forEach(b => b.onclick = () => togglePromo(Number(b.dataset.promoToggle)));
+}
+
+async function deletePromo(id){
+  if (!confirm('Удалить этот промокод?')) return;
+  try {
+    await api(`/api/admin/promos/${id}`, { method:'DELETE' });
+    promos = promos.filter(p=>p.id!==id);
+    renderPromos();
+    showToast('Промокод удалён');
+  } catch(e){ showToast(e.message); }
+}
+
+async function togglePromo(id){
+  const p = promos.find(x=>x.id===id);
+  if (!p) return;
+  try {
+    const updated = await api(`/api/admin/promos/${id}`, {
+      method:'PUT', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify({ active: !p.active })
+    });
+    promos = promos.map(x => x.id===id ? updated : x);
+    renderPromos();
+    showToast(updated.active ? 'Промокод включён' : 'Промокод выключен');
+  } catch(e){ showToast(e.message); }
+}
+
+function renderPromoTypePicker(){
+  document.querySelectorAll('#promoTypePicker .badge-opt').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.type === selectedPromoType);
+  });
+  document.getElementById('pValueLabel').textContent = selectedPromoType === 'percent' ? 'Значение, %' : 'Значение, ₽';
+}
+document.querySelectorAll('#promoTypePicker .badge-opt').forEach(btn=>{
+  btn.onclick = () => { selectedPromoType = btn.dataset.type; renderPromoTypePicker(); };
+});
+
+function renderPromoActivePicker(){
+  document.querySelectorAll('#promoActivePicker .badge-opt').forEach(btn=>{
+    btn.classList.toggle('active', (btn.dataset.active === '1') === selectedPromoActive);
+  });
+}
+document.querySelectorAll('#promoActivePicker .badge-opt').forEach(btn=>{
+  btn.onclick = () => { selectedPromoActive = btn.dataset.active === '1'; renderPromoActivePicker(); };
+});
+
+function openPromoModal(id){
+  editingPromoId = id || null;
+  document.getElementById('promoFormError').textContent = '';
+  const p = id ? promos.find(x=>x.id===id) : null;
+
+  document.getElementById('promoModalTitle').textContent = p ? 'Изменить промокод' : 'Новый промокод';
+  document.getElementById('promoModalSub').textContent = p ? p.code : 'заполните параметры скидки';
+  document.getElementById('pCode').value = p?.code || '';
+  document.getElementById('pValue').value = p?.value ?? '';
+  document.getElementById('pMinTotal').value = p?.min_total ?? '';
+  document.getElementById('pMaxUses').value = p?.max_uses ?? '';
+  selectedPromoType = p?.type || 'percent';
+  selectedPromoActive = p ? !!p.active : true;
+  renderPromoTypePicker();
+  renderPromoActivePicker();
+
+  document.getElementById('promoOverlay').classList.add('open');
+}
+
+function closePromoModal(){
+  document.getElementById('promoOverlay').classList.remove('open');
+}
+document.getElementById('promoCancelBtn').onclick = closePromoModal;
+document.getElementById('promoOverlay').addEventListener('click', e=>{ if(e.target.id==='promoOverlay') closePromoModal(); });
+
+document.getElementById('promoSaveBtn').onclick = async () => {
+  const code = document.getElementById('pCode').value.trim();
+  const value = document.getElementById('pValue').value;
+  const minTotal = document.getElementById('pMinTotal').value;
+  const maxUses = document.getElementById('pMaxUses').value;
+
+  if (!code || !value){
+    document.getElementById('promoFormError').textContent = 'Заполните код и значение скидки';
+    return;
+  }
+
+  const payload = {
+    code, type: selectedPromoType, value,
+    min_total: minTotal, max_uses: maxUses,
+    active: selectedPromoActive,
+  };
+  const btn = document.getElementById('promoSaveBtn');
+  btn.disabled = true;
+  try {
+    if (editingPromoId){
+      const updated = await api(`/api/admin/promos/${editingPromoId}`, {
+        method:'PUT', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload)
+      });
+      promos = promos.map(p => p.id===editingPromoId ? updated : p);
+      showToast('Промокод обновлён');
+    } else {
+      const created = await api('/api/admin/promos', {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload)
+      });
+      promos.push(created);
+      showToast('Промокод создан');
+    }
+    renderPromos();
+    closePromoModal();
+  } catch(e){
+    document.getElementById('promoFormError').textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+// --- Modal / form ------------------------------------------------------
+
+function renderSwatchPicker(){
+  const el = document.getElementById('swatchPicker');
+  el.innerHTML = SWATCHES.map((s,i)=>`<div class="swatch-opt ${i===selectedSwatch?'active':''}" data-i="${i}" style="background:${s}"></div>`).join('');
+  el.querySelectorAll('.swatch-opt').forEach(d=>{
+    d.onclick = () => { selectedSwatch = Number(d.dataset.i); renderSwatchPicker(); };
+  });
+}
+
+function renderBadgePicker(){
+  document.querySelectorAll('#badgePicker .badge-opt').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.badge === selectedBadge);
+  });
+}
+document.querySelectorAll('#badgePicker .badge-opt').forEach(btn=>{
+  btn.onclick = () => { selectedBadge = btn.dataset.badge; renderBadgePicker(); };
+});
+
+function openModal(id){
+  editingId = id || null;
+  uploadedImages = [];
+  document.getElementById('formError').textContent = '';
+  const p = id ? products.find(x=>x.id===id) : null;
+
+  document.getElementById('modalTitle').textContent = p ? 'Изменить товар' : 'Новый товар';
+  document.getElementById('modalSub').textContent = p ? p.name : 'заполните карточку товара';
+  document.getElementById('fName').value = p?.name || '';
+  document.getElementById('fCategory').value = p?.category || '';
+  document.getElementById('fSub').value = p?.subcategory || '';
+  document.getElementById('subList').innerHTML = [...new Set((typeof products!=='undefined'?products:[]).map(x=>x.subcategory).filter(Boolean))].map(s=>`<option value="${s}">`).join('');
+  document.getElementById('fPrice').value = p?.price || '';
+  document.getElementById('fOldPrice').value = p?.old_price || '';
+  document.getElementById('fStock').value = (p && p.stock != null) ? p.stock : '';
+  document.getElementById('fSizes').value = (p?.sizes||[]).join(', ');
+  document.getElementById('fDesc').value = p?.desc || '';
+  selectedSwatch = p?.swatch || 0;
+  selectedBadge = p?.badge || '';
+  uploadedImages = (p?.images && p.images.length) ? [...p.images] : (p?.image ? [p.image] : []);
+  renderSwatchPicker();
+  renderBadgePicker();
+  renderPhotoGrid();
+
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+}
+document.getElementById('cancelBtn').onclick = closeModal;
+document.getElementById('overlay').addEventListener('click', e=>{ if(e.target.id==='overlay') closeModal(); });
+document.getElementById('addBtn').onclick = () => {
+  if (currentTab === 'promos') openPromoModal(null);
+  else openModal(null);
+};
+
+function renderPhotoGrid(){
+  const grid = document.getElementById('photoGrid');
+  const tiles = uploadedImages.map((url, i) => `
+    <div class="photo-tile ${i===0?'cover':''}" style="background-image:url('${url}')">
+      <button type="button" class="photo-tile-move left ${i===0?'disabled':''}" data-move="${i}:-1" title="Сдвинуть влево">‹</button>
+      <button type="button" class="photo-tile-move right ${i===uploadedImages.length-1?'disabled':''}" data-move="${i}:1" title="Сдвинуть вправо">›</button>
+      <button type="button" class="photo-tile-remove" data-remove="${i}" title="Удалить">×</button>
+    </div>
+  `).join('');
+  const addTile = `<div class="photo-tile-add" id="photoAddTile"><span>+</span>Добавить</div>`;
+  grid.innerHTML = tiles + addTile;
+
+  grid.querySelectorAll('[data-remove]').forEach(btn=>{
+    btn.onclick = () => { uploadedImages.splice(Number(btn.dataset.remove), 1); renderPhotoGrid(); };
+  });
+  grid.querySelectorAll('[data-move]').forEach(btn=>{
+    btn.onclick = () => {
+      const [idx, dir] = btn.dataset.move.split(':').map(Number);
+      const target = idx + dir;
+      if (target < 0 || target >= uploadedImages.length) return;
+      [uploadedImages[idx], uploadedImages[target]] = [uploadedImages[target], uploadedImages[idx]];
+      renderPhotoGrid();
+    };
+  });
+  document.getElementById('photoAddTile').onclick = () => document.getElementById('photoInput').click();
+}
+
+document.getElementById('photoInput').addEventListener('change', async (e) => {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+
+  const grid = document.getElementById('photoGrid');
+  const placeholders = files.map(() => {
+    const tile = document.createElement('div');
+    tile.className = 'photo-tile uploading';
+    tile.textContent = 'Загрузка...';
+    grid.insertBefore(tile, document.getElementById('photoAddTile'));
+    return tile;
+  });
+
+  for (let i = 0; i < files.length; i++){
+    try {
+      const fd = new FormData();
+      fd.append('file', files[i]);
+      const res = await fetch('/api/admin/upload', { method:'POST', headers:{ 'X-Admin-Password': pwd }, body: fd });
+      if (!res.ok){
+        const err = await res.json().catch(()=>({}));
+        throw new Error(err.error || 'Не удалось загрузить фото');
+      }
+      const data = await res.json();
+      uploadedImages.push(data.url);
+    } catch(err){
+      showToast(err.message);
+    }
+  }
+  renderPhotoGrid();
+  e.target.value = '';
+});
+
+document.getElementById('saveBtn').onclick = async () => {
+  const name = document.getElementById('fName').value.trim();
+  const category = document.getElementById('fCategory').value.trim();
+  const price = document.getElementById('fPrice').value;
+  const oldPrice = document.getElementById('fOldPrice').value;
+  const sizes = document.getElementById('fSizes').value;
+  const desc = document.getElementById('fDesc').value.trim();
+
+
+  if (!name || !category || !price){
+    document.getElementById('formError').textContent = 'Заполните название, категорию и цену';
+    return;
+  }
+
+  const payload = { name, category, subcategory: document.getElementById('fSub').value.trim(), price, old_price: oldPrice, stock: document.getElementById('fStock').value, badge: selectedBadge, sizes, desc, swatch: selectedSwatch, images: uploadedImages };
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  try {
+    if (editingId){
+      const updated = await api(`/api/admin/products/${editingId}`, {
+        method:'PUT', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload)
+      });
+      products = products.map(p => p.id===editingId ? updated : p);
+      showToast('Товар обновлён');
+    } else {
+      const created = await api('/api/admin/products', {
+        method:'POST', headers:{ 'Content-Type':'application/json' }, body: JSON.stringify(payload)
+      });
+      products.push(created);
+      showToast('Товар добавлен');
+    }
+    renderList();
+    updateStats();
+    closeModal();
+  } catch(e){
+    document.getElementById('formError').textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+};
+
+// --- Init ------------------------------------------------------------
+
+if (pwd){
+  api('/api/admin/login', { method:'POST' })
+    .then(enterApp)
+    .catch(() => { pwd=''; localStorage.removeItem('sh_admin_pwd'); });
+}
+
+
+// --- Intersection Observer for reveal animations ---
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+function observeReveals() {
+  document.querySelectorAll('.card, .order-card').forEach(el => {
+    el.classList.add('reveal');
+    revealObserver.observe(el);
+  });
+}
+
+// --- Animated counter for stats ---
+function animateCounter(el, target, duration = 800) {
+  const start = performance.now();
+  const from = parseInt(el.textContent) || 0;
+  function step(now) {
+    const progress = Math.min((now - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.round(from + (target - from) * ease);
+    if (progress < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+const originalUpdateStats = updateStats;
+updateStats = function() {
+  const oldProducts = parseInt(document.getElementById('statProducts').textContent) || 0;
+  const oldOrders = parseInt(document.getElementById('statOrders').textContent) || 0;
+  const oldNew = parseInt(document.getElementById('statNew').textContent) || 0;
+  const oldQuestions = parseInt(document.getElementById('statQuestionsNew').textContent) || 0;
+
+  originalUpdateStats();
+
+  if (parseInt(document.getElementById('statProducts').textContent) !== oldProducts)
+    animateCounter(document.getElementById('statProducts'), products.length);
+  if (parseInt(document.getElementById('statOrders').textContent) !== oldOrders)
+    animateCounter(document.getElementById('statOrders'), orders.length);
+  if (parseInt(document.getElementById('statNew').textContent) !== oldNew)
+    animateCounter(document.getElementById('statNew'), orders.filter(o=>o.status==='new'||o.status==='contacted').length);
+  if (parseInt(document.getElementById('statQuestionsNew').textContent) !== oldQuestions)
+    animateCounter(document.getElementById('statQuestionsNew'), questions.filter(q=>q.status==='new').length);
+};
+
+// Override render functions to add reveals
+const originalRenderList = renderList;
+renderList = function() {
+  originalRenderList();
+  setTimeout(observeReveals, 100);
+};
+const originalRenderOrders = renderOrders;
+renderOrders = function() {
+  originalRenderOrders();
+  setTimeout(observeReveals, 100);
+};
+const originalRenderQuestions = renderQuestions;
+renderQuestions = function() {
+  originalRenderQuestions();
+  setTimeout(observeReveals, 100);
+};
+const originalRenderPromos = renderPromos;
+renderPromos = function() {
+  originalRenderPromos();
+  setTimeout(observeReveals, 100);
+};
+</script>
+</body>
+</html>

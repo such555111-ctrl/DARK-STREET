@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: hqm-shop-bot
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app --bind 0.0.0.0:$PORT --workers 1 --threads 4 --timeout 60
+    envVars:
+      - key: BOT_TOKEN
+        sync: false
+      - key: WEBHOOK_URL
+        sync: false
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: ADMIN_CHAT_ID
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: SHOP_CONTACT
+        value: HQManager1
+    # Данные и фото хранятся в Neon (DATABASE_URL) — Persistent Disk не нужен.
