@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: hqm-shop-bot
+    name: dark-street-bot
     env: python
     plan: free
     buildCommand: pip install -r requirements.txt
@@ -17,5 +17,5 @@ services:
       - key: DATABASE_URL
         sync: false
       - key: SHOP_CONTACT
-        value: HQManager1
+        value: darkstreetmanager
     # Данные и фото хранятся в Neon (DATABASE_URL) — Persistent Disk не нужен.

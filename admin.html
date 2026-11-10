@@ -3,23 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<title>HQM | SHOP · Админ</title>
-<meta name="theme-color" content="#050506">
+<title>DARK STREET · Админ</title>
+<meta name="theme-color" content="#060606">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii0xNCAtNTMgMjA2IDIwNiI+PHJlY3QgeD0iLTE0IiB5PSItNTMiIHdpZHRoPSIyMDYiIGhlaWdodD0iMjA2IiByeD0iMzQiIGZpbGw9IiMwYTBhMGEiLz48ZyBmaWxsPSIjZjNmM2YxIj48cGF0aCBkPSJNMC4wLDAuMCBMNTQuMCwwLjAgTDg4LjAsMTguMCBMODguMCw4Mi4wIEw1NC4wLDEwMC4wIEwwLjAsMTAwLjAgWiBNMjguMCw3NC4wIEw0Ni4wLDc0LjAgTDYwLjAsNjQuMCBMNjAuMCwzNi4wIEw0Ni4wLDI2LjAgTDI4LjAsMjYuMCBaICIvPjxwYXRoIGQ9Ik05Ni4wLDAuMCBMMTc4LjAsMC4wIEwxNzguMCwyNi4wIEw5Ni4wLDI2LjAgWiBNOTYuMCwwLjAgTDEyNC4wLDAuMCBMMTI0LjAsNTIuMCBMOTYuMCw1Mi4wIFogTTk2LjAsMzguMCBMMTc4LjAsMzguMCBMMTc4LjAsNjQuMCBMOTYuMCw2NC4wIFogTTE1MC4wLDUwLjAgTDE3OC4wLDUwLjAgTDE3OC4wLDEwMC4wIEwxNTAuMCwxMDAuMCBaIE05Ni4wLDc0LjAgTDE3OC4wLDc0LjAgTDE3OC4wLDEwMC4wIEw5Ni4wLDEwMC4wIFogIi8+PC9nPjwvc3ZnPg==">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg-primary:#050506;
-    --bg-card:#111113;
-    --bg-card-hover:#1B1B1F;
-    --accent-color:#D4D7DC;
-    --accent-2:#9EA3AB;
-    --gold:#E6E8EB;
+    --bg-primary:#060606;
+    --bg-card:#111111;
+    --bg-card-hover:#1A1A1A;
+    --accent-color:#F3F3F1;
+    --accent-2:#C9C9C4;
+    --gold:#FFFFFF;
     --lime:#7FD99A;
-    --text-primary:#F4F4F5;
-    --text-secondary:#A4A5AB;
-    --border-color:#2A2A2F;
+    --text-primary:#F3F3F1;
+    --text-secondary:#9B9B96;
+    --border-color:#262626;
     --font-display:'Oswald','Arial Narrow','Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
   --font-heading:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
     --font-body:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
@@ -340,7 +341,7 @@
   .reveal{opacity:0;transform:translateY(16px);transition:all .5s var(--ease);}
   .reveal.visible{opacity:1;transform:translateY(0);}
 
-  /* ---------- анимация логотипа HQM SHOP ---------- */
+  /* ---------- анимация логотипа DARK STREET ---------- */
   .bb-float{animation:bbFloat 4.2s ease-in-out infinite;}
   @keyframes bbFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-2.5px);}}
   .bb-glowp{animation:bbGlow 3s ease-in-out infinite;}
@@ -433,26 +434,25 @@
   .loy-empty-h{padding:18px;text-align:center;color:var(--muted);font-size:12px;}
   .order-loy-btn{margin-top:10px;width:100%;padding:11px 14px;font-size:11px;}
 
-  /* ===================== HQM SHOP · редизайн ===================== */
-  :root{--on-grad:#0A0A0B;--grad:linear-gradient(135deg,#F7F8FA 0%,#B9BDC4 48%,#E9EBEE 100%);--font-display:'Playfair Display','Times New Roman',Georgia,serif;--font-heading:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;}
+  /* ===================== DARK STREET · редизайн ===================== */
+  :root{--paper:#F3F3F1;--ink:#0A0A0A;--on-grad:#0A0A0A;--grad:linear-gradient(180deg,#FFFFFF 0%,#E2E2DE 100%);--font-display:'Oswald','Arial Narrow',Impact,sans-serif;--font-heading:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;}
   body{font-variant-numeric:lining-nums;}
   .logo-svg{display:none;}
-  .logo-txt{display:inline-block;font-family:var(--font-display);font-weight:800;font-size:16px;letter-spacing:.05em;line-height:1;white-space:nowrap;
-    background:linear-gradient(180deg,#FFFFFF 0%,#D5D8DD 44%,#8B8F97 52%,#F1F2F4 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
-    filter:drop-shadow(0 0 10px rgba(255,255,255,.18));}
-  .logo-txt b{font-weight:400;margin:0 .3em;opacity:.55;}
+  .logo-txt{display:inline-flex;align-items:baseline;gap:.34em;font-family:var(--font-display);font-weight:700;font-size:19px;letter-spacing:.12em;line-height:1;text-transform:uppercase;white-space:nowrap;color:#fff;}
+  .logo-txt b{font-weight:700;color:transparent;-webkit-text-stroke:1px #fff;margin:0;opacity:1;}
   .brand{gap:10px;}
-  .header-actions{gap:6px;}
-  #bagBtn{color:var(--on-grad);}
-  #bagBtn .icon-badge{background:#0A0A0B;color:#F4F4F5;border-color:#D4D7DC;}
-
-  header .logo-txt,.login-box .logo-txt{font-size:22px;}
+  header .logo-txt,.login-box .logo-txt{font-size:24px;}
+  .brand .logo-sub{letter-spacing:.34em;font-family:var(--font-display);font-weight:500;}
+  .topbar{border-bottom:1px solid #fff;}
+  .login-card{border-radius:6px;}
+  .btn{color:var(--on-grad);background:#fff;border-radius:6px;box-shadow:4px 4px 0 #6F6F6B;font-family:var(--font-display);letter-spacing:.12em;text-transform:uppercase;font-weight:600;}
+  body::before{background:radial-gradient(ellipse 80% 40% at 50% 0%, rgba(255,255,255,.04), transparent 65%);}
 </style>
 </head>
 <body>
 <div id="loginView" class="login-box">
   <div class="brand" style="flex-direction:column;gap:6px;">
-    <span class="logo-txt" role="img" aria-label="HQM SHOP">HQM<b>|</b>SHOP</span>
+    <span class="logo-txt" role="img" aria-label="DARK STREET">DARK<b>STREET</b></span>
     <div class="logo-sub">Панель администратора</div>
   </div>
   <div class="login-card">
@@ -466,7 +466,7 @@
 <div id="app" style="display:none;">
   <div class="topbar">
     <div class="brand">
-      <span class="logo-txt" role="img" aria-label="HQM SHOP">HQM<b>|</b>SHOP</span>
+      <span class="logo-txt" role="img" aria-label="DARK STREET">DARK<b>STREET</b></span>
       <div class="brand-text">
         <h1 id="viewTitle">Товары</h1>
       </div>
@@ -510,7 +510,7 @@
     <input type="text" id="fName" placeholder="PAFOS 20000">
 
     <label>Подкатегория / бренд</label>
-    <input type="text" id="fSub" list="subList" placeholder="Vaporesso (необязательно)">
+    <input type="text" id="fSub" list="subList" placeholder="Бренд / линейка (необязательно)">
     <datalist id="subList"></datalist>
 
     <div class="row">
@@ -922,7 +922,7 @@ function renderOrders(){
     <div class="order-card">
       <div class="order-head">
         <div>
-          <div class="order-id">HQ-${o.id}</div>
+          <div class="order-id">DS-${o.id}</div>
           <div class="order-date">${new Date(o.created_at).toLocaleString('ru-RU')}</div>
         </div>
         <span class="status-badge status-${o.status}">${statusLabel(o.status)}</span>
