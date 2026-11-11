@@ -143,8 +143,8 @@
   /* ---------- фильтры ---------- */
   .section-title{display:flex;align-items:center;gap:10px;padding:22px 18px 0;font-family:var(--font-display);font-weight:600;font-size:19px;text-transform:uppercase;letter-spacing:.06em;}
   .section-title::after{content:"";flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--line) 0 6px,transparent 6px 11px);}
-  .filters-row{display:flex;align-items:center;gap:10px;padding:14px 18px 6px;}
-  .filters{flex:1;min-width:0;display:flex;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;}
+  .filters-row{display:flex;align-items:flex-start;gap:10px;padding:14px 18px 6px;}
+  .filters{flex:1;min-width:0;display:flex;flex-wrap:wrap;gap:8px;}
   .filters::-webkit-scrollbar{display:none;}
   .chip{
     flex:0 0 auto;border:1.5px solid var(--line);color:var(--muted);background:var(--bg-elev);border-radius:12px;padding:9px 15px;
@@ -330,6 +330,8 @@
   .promo-chip-remove:hover{color:var(--danger);}
   .empty{padding:56px 0;text-align:center;color:var(--muted);font-size:14px;line-height:1.6;}
   .empty svg{opacity:.4;margin-bottom:14px;}
+  .co-or{display:flex;align-items:center;gap:12px;margin:18px 0 4px;font-size:12px;color:var(--muted-dim);text-transform:uppercase;letter-spacing:.1em;}
+  .co-or::before,.co-or::after{content:"";flex:1;height:1px;background:var(--line);}
   .test-badge{font-size:12px;letter-spacing:.01em;color:var(--muted);line-height:1.65;border:1.5px dashed var(--line);border-radius:12px;padding:11px 13px;margin-bottom:20px;background:rgba(255,255,255,.02);}
   .success-icon{width:68px;height:68px;border:2.5px solid var(--lime);border-radius:22px;display:flex;align-items:center;justify-content:center;margin:24px auto 18px;color:var(--lime);animation:successPop .6s var(--ease-spring) both;box-shadow:0 0 0 10px rgba(127,217,154,.08), 0 0 40px rgba(127,217,154,.2);}
   @keyframes successPop{0%{transform:scale(0) rotate(-10deg);opacity:0;}60%{transform:scale(1.1) rotate(3deg);}100%{transform:scale(1) rotate(0);}}
@@ -453,7 +455,7 @@
   @media (prefers-reduced-motion:reduce){.steel-glow i,.ticker-wrap,.hero::before,.hero-cta::after,.btn-primary::after,.badge-hit,.chip.active,.section-title::before{animation:none!important;}}
 
   /* ---------- подкатегории ---------- */
-  .subfilters{display:flex;gap:7px;overflow-x:auto;padding:4px 18px 8px;scrollbar-width:none;}
+  .subfilters{display:flex;flex-wrap:wrap;gap:7px;padding:4px 18px 8px;}
   .subfilters::-webkit-scrollbar{display:none;}
   .subfilters:empty{display:none;}
   .subchip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;background:transparent;border:1.5px solid var(--line);color:var(--muted);border-radius:999px;padding:7px 13px;font-family:var(--font-heading);font-weight:700;font-size:11.5px;cursor:pointer;animation:subIn .35s var(--ease) both;transition:all .2s var(--ease);}
@@ -557,170 +559,7 @@
   .stock-bar span{display:block;height:100%;border-radius:99px;background:var(--tone);transition:width .7s var(--ease);}
   .pd-stock-hint{margin-top:8px;font-family:var(--font-body);font-size:12px;color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0;}
 
-  /* =====================================================================
-     БОКОВОЕ МЕНЮ КАТЕГОРИЙ (как в МойСклад)
-     ===================================================================== */
   .brand{gap:10px;}
-  .burger-btn{flex:0 0 auto;}
-  .burger-lines{position:relative;display:block;width:18px;height:14px;}
-  .burger-lines i{
-    position:absolute;left:0;width:100%;height:2px;border-radius:2px;background:currentColor;
-    transition:transform .3s var(--ease), opacity .2s var(--ease), width .3s var(--ease);
-  }
-  .burger-lines i:nth-child(1){top:0;}
-  .burger-lines i:nth-child(2){top:6px;width:70%;}
-  .burger-lines i:nth-child(3){top:12px;}
-  .burger-btn:hover .burger-lines i:nth-child(2){width:100%;}
-  body.menu-open .burger-lines i:nth-child(1){transform:translateY(6px) rotate(45deg);}
-  body.menu-open .burger-lines i:nth-child(2){opacity:0;}
-  body.menu-open .burger-lines i:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
-
-  .menu-overlay{
-    position:fixed;inset:0;z-index:50;
-    background:rgba(214,216,222,.72);
-    -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
-    opacity:0;pointer-events:none;
-    transition:opacity .35s var(--ease);
-  }
-  .menu-overlay.active{opacity:1;pointer-events:auto;}
-  body.menu-open{overflow:hidden;}
-
-  .sidebar-menu{
-    position:fixed;top:0;left:0;bottom:0;z-index:60;
-    width:min(86vw,340px);
-    display:flex;flex-direction:column;
-    background:linear-gradient(180deg,#18181B 0%,#0B0B0D 100%);
-    border-right:1.5px solid var(--line);
-    box-shadow:none;
-    transform:translateX(-102%);
-    visibility:hidden;
-    transition:transform .45s var(--ease), box-shadow .45s var(--ease), visibility 0s linear .45s;
-    padding-bottom:var(--safe-b);
-    will-change:transform;
-  }
-  .sidebar-menu.active{
-    transform:translateX(0);
-    visibility:visible;
-    box-shadow:24px 0 80px rgba(0,0,0,.7);
-    transition:transform .45s var(--ease), box-shadow .45s var(--ease), visibility 0s;
-  }
-  .sidebar-head{
-    flex:0 0 auto;
-    display:flex;align-items:center;justify-content:space-between;gap:12px;
-    padding:calc(16px + var(--safe-t)) 18px 14px 22px;
-    border-bottom:1px solid var(--line);
-  }
-  .sidebar-title{
-    margin:0;font-family:var(--font-heading);font-weight:800;font-size:16px;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--text);
-  }
-  .sidebar-close{
-    flex:0 0 auto;width:40px;height:40px;border-radius:13px;
-    display:flex;align-items:center;justify-content:center;
-    background:var(--bg-elev);border:1.5px solid var(--line);color:var(--muted);
-    cursor:pointer;transition:all .25s var(--ease);
-  }
-  .sidebar-close:hover{color:var(--text);border-color:var(--accent);}
-  .sidebar-close:active{transform:scale(.88) rotate(90deg);}
-  .sidebar-body{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:10px 0 24px;}
-
-  .cat-list,.sub-list{list-style:none;margin:0;padding:0;}
-  .cat-item{position:relative;}
-  .cat-item + .cat-item{border-top:1px solid var(--line-soft);}
-  .cat-link{
-    position:relative;width:100%;display:flex;align-items:center;gap:10px;text-align:left;
-    padding:17px 20px 17px 22px;
-    background:none;border:none;color:var(--text);cursor:pointer;
-    font-family:var(--font-body);font-size:16px;font-weight:500;line-height:1.3;
-    transition:background .2s var(--ease), color .2s var(--ease), padding-left .25s var(--ease);
-  }
-  .cat-link::before{
-    content:"";position:absolute;left:0;top:50%;width:3px;height:0;border-radius:0 3px 3px 0;
-    background:var(--grad);transform:translateY(-50%);transition:height .25s var(--ease);
-  }
-  .cat-link:active{background:var(--bg-card-hover);}
-  .cat-name{flex:1;min-width:0;}
-  .cat-arrow{flex:0 0 auto;color:var(--muted-dim);transition:transform .3s var(--ease), color .2s var(--ease);}
-  .cat-item.open > .cat-link,
-  .cat-link.current{color:var(--accent-soft);background:rgba(212,215,220,.06);}
-  .cat-item.open > .cat-link::before,
-  .cat-link.current::before{height:60%;}
-  .cat-item.open > .cat-link .cat-arrow{transform:rotate(90deg);color:var(--accent);}
-
-  .cat-sale{margin:8px 14px 0;border-top:none !important;border-radius:16px;
-    background:linear-gradient(135deg,rgba(212,215,220,.16),rgba(212,215,220,.10));
-    border:1.5px solid rgba(214,216,222,.45);overflow:hidden;}
-  .cat-sale .cat-link{padding:15px 14px 15px 16px;color:#fff;font-family:var(--font-heading);font-weight:800;letter-spacing:.05em;}
-  .cat-sale .cat-link::before{display:none;}
-  .cat-sale .cat-arrow{color:var(--accent);}
-  .cat-badge{
-    flex:0 0 auto;padding:4px 9px;border-radius:8px;background:var(--grad);color:var(--on-grad);
-    font-family:var(--font-heading);font-size:10px;font-weight:900;letter-spacing:.08em;
-    animation:saleGlow 2s ease-in-out infinite;
-  }
-  @keyframes saleGlow{0%,100%{box-shadow:0 0 0 rgba(214,216,222,0);}50%{box-shadow:0 0 14px rgba(214,216,222,.7);}}
-
-  .cat-sub{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease);}
-  .cat-item.open > .cat-sub{grid-template-rows:1fr;}
-  .sub-list{overflow:hidden;min-height:0;}
-  .sub-list:empty{display:none;}
-  .sub-link{
-    display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
-    padding:12px 20px 12px 38px;background:none;border:none;text-align:left;cursor:pointer;
-    color:var(--muted);font-family:var(--font-body);font-size:14.5px;font-weight:500;
-    transition:color .2s var(--ease), background .2s var(--ease);
-  }
-  .sub-link:active,.sub-link.current{color:var(--text);background:var(--bg-card-hover);}
-  .sub-link .cnt{font-size:11.5px;color:var(--muted-dim);font-weight:600;}
-  .sub-list{padding-bottom:4px;}
-  .menu-dynamic{margin-top:6px;}
-  .menu-dynamic:empty{display:none;}
-
-  /* бейдж активной категории над товарами */
-  .cat-bar{display:flex;align-items:center;flex-wrap:wrap;gap:8px;padding:12px 18px 0;animation:promoIn .25s var(--ease) both;}
-  .cat-bar[hidden]{display:none;}
-  .cat-pill{display:inline-flex;align-items:center;gap:8px;max-width:100%;padding:7px 8px 7px 14px;border-radius:12px;
-    background:var(--pink-dim);border:1.5px solid rgba(214,216,222,.4);color:var(--accent-soft);font-size:13px;}
-  .cat-pill b{font-family:var(--font-heading);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .cat-pill em{font-style:normal;font-size:11px;font-weight:800;color:var(--on-grad);background:var(--grad);border-radius:7px;padding:2px 7px;}
-  .cat-reset{height:32px;padding:0 12px;border-radius:10px;background:transparent;border:1.5px solid var(--line);
-    color:var(--muted);font:600 12.5px var(--font-body);cursor:pointer;transition:all .2s var(--ease);}
-  .cat-reset:active{transform:scale(.94);}
-  .cat-reset:hover{color:var(--text);border-color:var(--accent);}
-
-
-  /* ===== навигация по уровням (как в МойСклад) ===== */
-  .cat-nav{position:relative;}
-  .nav-panel{animation:navIn .28s var(--ease) both;}
-  .nav-panel.fwd{--from:28px;}
-  .nav-panel.back{--from:-28px;}
-  @keyframes navIn{from{opacity:0;transform:translateX(var(--from,0));}to{opacity:1;transform:none;}}
-  .nav-back{
-    display:inline-flex;align-items:center;gap:4px;margin:2px 0 0;padding:14px 20px 8px 14px;
-    background:none;border:none;cursor:pointer;color:var(--accent-soft);
-    font-family:var(--font-body);font-size:15px;font-weight:600;
-  }
-  .nav-back:active{opacity:.6;}
-  .nav-all{
-    display:flex;align-items:center;gap:10px;width:calc(100% - 28px);margin:4px 14px 8px;padding:14px 16px;
-    text-align:left;cursor:pointer;color:var(--text);
-    background:linear-gradient(135deg,rgba(212,215,220,.12),rgba(212,215,220,.06));
-    border:1.5px solid rgba(214,216,222,.35);border-radius:16px;
-    transition:transform .2s var(--ease), background .2s var(--ease);
-  }
-  .nav-all:active{transform:scale(.98);}
-  .nav-all .nav-txt{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;}
-  .nav-all b{font-family:var(--font-heading);font-weight:800;font-size:18px;line-height:1.2;}
-  .nav-all small{font-size:12.5px;color:var(--muted);}
-  .nav-all em,.cat-link .cnt{font-style:normal;font-size:11.5px;font-weight:800;border-radius:8px;padding:2px 8px;}
-  .nav-all em{color:var(--on-grad);background:var(--grad);}
-  .cat-link .cnt{color:var(--muted-dim);padding:0;font-weight:600;}
-
-  @media (prefers-reduced-motion:reduce){
-    .sidebar-menu,.menu-overlay,.cat-sub,.burger-lines i{transition-duration:.01s;}
-    .nav-panel{animation:none;}
-    .cat-badge{animation:none;}
-  }
 
   /* =====================================================================
      КАТАЛОГ СПИСКОМ (компактные строки, как в МойСклад) + быстрый «+»
@@ -807,214 +646,7 @@
   .skel-lines .skel-line{margin-top:0;margin-bottom:9px;width:80%;}
   .skel-lines .skel-line.short{width:45%;margin-bottom:0;}
 
-  /* ===================== ОТЗЫВЫ ===================== */
-  /* ---------- общее: золотые звёзды (поддерживают дробные значения 4.8) ---------- */
-  .rv-stars{
-    --rating:5;
-    display:inline-block;font-size:16px;line-height:1;letter-spacing:.14em;white-space:nowrap;
-    background:linear-gradient(90deg,var(--gold) 0,var(--gold) calc(var(--rating) / 5 * 100%),#3A3A40 calc(var(--rating) / 5 * 100%));
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-    filter:drop-shadow(0 0 6px rgba(232,234,238,.28));
-  }
-
-  /* ---------- [B] кнопка «Отзывы» в шапке ---------- */
-  #reviewsBtn{color:var(--gold);}
-  #reviewsBtn:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(232,234,238,.28);}
-  #reviewsBtn svg{fill:var(--gold);stroke:var(--gold);}
-  #reviewsBtn .rating-badge{
-    display:flex;top:auto;bottom:-7px;right:-8px;min-width:26px;
-    font-family:var(--font-heading);letter-spacing:.01em;
-  }
-
-  /* ---------- [C] пункт «⭐ Отзывы» в боковом меню ---------- */
-  .menu-reviews{margin:10px 14px 0;padding-top:10px;border-top:1px solid var(--line-soft);}
-  .reviews-entry{
-    width:100%;display:flex;align-items:center;gap:12px;text-align:left;cursor:pointer;
-    padding:14px 16px;color:var(--text);
-    background:linear-gradient(135deg,rgba(232,234,238,.12),rgba(212,215,220,.05));
-    border:1.5px solid rgba(232,234,238,.32);border-radius:16px;
-    font-family:var(--font-body);font-size:16px;font-weight:600;
-    transition:transform .2s var(--ease), border-color .2s var(--ease);
-  }
-  .reviews-entry:active{transform:scale(.98);}
-  .reviews-entry:hover{border-color:var(--gold);}
-  .reviews-entry .re-star{font-size:20px;line-height:1;filter:drop-shadow(0 0 8px rgba(232,234,238,.5));}
-  .reviews-entry .re-name{flex:1;min-width:0;}
-  .reviews-entry .re-badge{
-    flex:0 0 auto;display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:10px;
-    background:var(--gold);color:#0A0A0B;font-family:var(--font-heading);font-size:12.5px;font-weight:900;
-  }
-  .reviews-entry .re-arrow{flex:0 0 auto;color:var(--muted-dim);}
-
-  /* ---------- [D] окно со списком отзывов ---------- */
-  #reviewsSheet{z-index:41;}
-  .reviews-container{display:flex;flex-direction:column;gap:16px;}
-  .rv-title{font-family:var(--font-heading);font-size:24px;font-weight:900;text-transform:uppercase;margin:4px 0 0;line-height:1.1;}
-
-  /* сводка */
-  .rv-summary{
-    position:relative;overflow:hidden;display:flex;flex-direction:column;gap:16px;padding:18px;
-    background:linear-gradient(160deg,#17171A,#0A0A0B);
-    border:1.5px solid var(--line);border-radius:var(--border-radius-card);
-  }
-  .rv-summary::before{
-    content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;
-    background:radial-gradient(circle,rgba(232,234,238,.20),transparent 70%);pointer-events:none;
-  }
-  .rv-summary-top{position:relative;display:flex;align-items:center;gap:16px;}
-  .rv-score{
-    flex:0 0 auto;font-family:var(--font-display);font-weight:900;font-size:54px;line-height:1;letter-spacing:-.02em;
-    background:linear-gradient(180deg,#FFFFFF,#F2F3F5);-webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-  }
-  .rv-score small{font-size:18px;font-weight:700;-webkit-text-fill-color:var(--muted-dim);color:var(--muted-dim);margin-left:2px;}
-  .rv-summary-meta{display:flex;flex-direction:column;gap:7px;min-width:0;}
-  .rv-summary-meta .rv-stars{font-size:22px;}
-  .rv-count{font-size:13px;color:var(--muted);font-weight:500;}
-  .rv-summary .btn-primary{position:relative;}
-
-  /* список карточек */
-  .rv-list{display:flex;flex-direction:column;gap:12px;}
-  .rv-card{
-    padding:14px 16px 16px;background:var(--bg-card);
-    border:1.5px solid var(--line);border-radius:var(--border-radius-card);
-    animation:rvIn .35s var(--ease) both;
-  }
-  @keyframes rvIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
-  .rv-card-head{display:flex;align-items:center;gap:11px;margin-bottom:10px;}
-  .rv-avatar{
-    flex:0 0 auto;width:38px;height:38px;border-radius:13px;display:flex;align-items:center;justify-content:center;
-    background:var(--grad);color:var(--on-grad);font-family:var(--font-heading);font-weight:900;font-size:16px;text-transform:uppercase;
-  }
-  .rv-author{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
-  .rv-author b{font-size:14.5px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-  .rv-date{font-size:12px;color:var(--muted-dim);font-weight:500;}
-  .rv-card .rv-stars{flex:0 0 auto;font-size:14px;}
-  .rv-text{margin:0;font-size:14px;line-height:1.6;color:#E6E8EB;white-space:pre-wrap;overflow-wrap:anywhere;}
-
-  /* пустое состояние */
-  .rv-empty{
-    display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;
-    padding:30px 18px;color:var(--muted);font-size:14px;line-height:1.6;
-    border:1.5px dashed var(--line);border-radius:var(--border-radius-card);background:rgba(255,255,255,.02);
-  }
-  .rv-empty .rv-empty-star{font-size:34px;line-height:1;color:#3A3A40;}
-  .rv-empty[hidden]{display:none;}
-
-  /* ---------- окно «Написать отзыв» ---------- */
-  #reviewFormSheet,#reviewSuccessSheet{z-index:46;}
-  .rv-form-sub{font-size:13px;color:var(--muted);line-height:1.55;margin:0 0 4px;}
-
-  /* выбор оценки: 5 звёзд на radio-кнопках (работает без JS; значение — input:checked) */
-  .rv-rate{
-    display:flex;flex-direction:row-reverse;justify-content:center;gap:6px;
-    padding:14px 8px;margin-top:6px;
-    background:var(--bg);border:1.5px solid var(--line);border-radius:16px;
-  }
-  .rv-rate.err{border-color:var(--danger);box-shadow:0 0 0 4px rgba(229,84,107,.15);}
-  .rv-rate input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
-  .rv-rate label{
-    cursor:pointer;font-size:42px;line-height:1;color:#3A3A40;padding:2px 3px;
-    transition:color .15s var(--ease), transform .25s var(--ease-spring), filter .2s var(--ease);
-    -webkit-user-select:none;user-select:none;
-  }
-  .rv-rate label:active{transform:scale(.82);}
-  .rv-rate input:checked ~ label,
-  .rv-rate label:hover,
-  .rv-rate label:hover ~ label{color:var(--gold);filter:drop-shadow(0 0 10px rgba(232,234,238,.45));}
-  .rv-rate input:checked + label{transform:scale(1.08);}
-  .rv-rate input:focus-visible + label{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px;}
-  .rv-rate-hint{min-height:18px;margin-top:10px;text-align:center;font-size:13px;font-weight:600;color:var(--muted);}
-
-  .rv-textarea{min-height:130px;}
-  .rv-counter{margin-top:6px;text-align:right;font-size:11.5px;font-weight:600;color:var(--muted-dim);}
-  .rv-note{
-    display:flex;gap:8px;align-items:flex-start;margin-top:14px;padding:11px 13px;
-    font-size:12px;line-height:1.55;color:var(--muted);
-    border:1.5px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02);
-  }
-  .rv-note span{flex:0 0 auto;}
-
-  @media (max-width:360px){
-    .rv-score{font-size:46px;}
-    .rv-rate label{font-size:36px;}
-  }
-  @media (prefers-reduced-motion:reduce){
-    .rv-card,.rv-rate label{animation:none;transition-duration:.01s;}
-  }
-
-  /* ---------- Баллы и кешбэк (палитра магазина: тёмная база, золото, огненный градиент) ---------- */
-  .loy-gem{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;color:var(--gold);
-    filter:drop-shadow(0 0 8px rgba(232,234,238,.45));}
-
-  /* компактный бейдж под шапкой */
-  .loy-pill{
-    display:none;align-items:center;gap:7px;margin:10px 18px 0;width:max-content;max-width:calc(100% - 36px);
-    padding:7px 12px 7px 9px;cursor:pointer;color:var(--text);
-    background:var(--bg-elev);border:1.5px solid rgba(232,234,238,.32);border-radius:12px;
-    font-family:var(--font-heading);font-weight:800;font-size:11.5px;letter-spacing:.03em;white-space:nowrap;
-    transition:transform .15s var(--ease),border-color .2s var(--ease),box-shadow .2s var(--ease);
-  }
-  .loy-pill.show{display:inline-flex;animation:fadeScaleIn .3s var(--ease) both;}
-  .loy-pill:hover{border-color:var(--gold);box-shadow:0 0 20px rgba(232,234,238,.22);}
-  .loy-pill:active{transform:scale(.95);}
-  .loy-pill b{color:var(--gold);font-weight:900;}
-  .loy-pill span span{color:var(--muted);font-weight:700;}
-
-  /* карточка в боковом меню — в стиле кнопки «Отзывы» */
-  .loy-menu{
-    display:none;align-items:center;gap:12px;margin:4px 14px 12px;padding:13px 16px;
-    background:linear-gradient(135deg,rgba(232,234,238,.12),rgba(212,215,220,.05));
-    border:1.5px solid rgba(232,234,238,.32);border-radius:16px;color:var(--text);
-  }
-  .loy-menu.show{display:flex;}
-  .loy-menu .loy-gem svg{width:22px;height:22px;}
-  .loy-menu-body{flex:1;min-width:0;}
-  .loy-menu-title{font-family:var(--font-body);font-size:15px;font-weight:600;}
-  .loy-menu-note{font-size:11.5px;line-height:1.45;color:var(--muted);margin-top:2px;}
-  .loy-chip{
-    flex:0 0 auto;padding:4px 10px;border-radius:10px;background:var(--gold);color:#0A0A0B;
-    font-family:var(--font-heading);font-size:12.5px;font-weight:900;white-space:nowrap;
-  }
-
-  /* блок списания в корзине */
-  .loy-block{
-    display:none;margin-top:16px;padding:14px;border-radius:16px;
-    background:linear-gradient(135deg,rgba(232,234,238,.10),rgba(212,215,220,.04)),var(--bg-elev);
-    border:1.5px solid rgba(232,234,238,.30);
-  }
-  .loy-block.show{display:block;animation:fadeScaleIn .3s var(--ease) both;}
-  .loy-head{display:flex;align-items:flex-start;gap:12px;}
-  .loy-head .loy-gem{margin-top:1px;}
-  .loy-info{flex:1;min-width:0;}
-  .loy-title{font-family:var(--font-heading);font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent-soft);}
-  .loy-avail{margin-top:5px;font-size:13px;line-height:1.5;color:var(--text);}
-  .loy-avail b{color:var(--gold);font-weight:800;}
-  .loy-sub{margin-top:3px;font-size:11.5px;line-height:1.45;color:var(--muted);}
-  .loy-row{
-    position:relative;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding-top:12px;
-    border-top:1px solid var(--line-soft);cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent;
-  }
-  .loy-row.off{cursor:default;opacity:.55;}
-  .loy-label{font-family:var(--font-heading);font-size:13px;font-weight:800;color:var(--text);}
-  .loy-label b{color:var(--gold);font-weight:900;}
-  .loy-row input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none;}
-  .loy-switch{
-    position:relative;flex:0 0 auto;width:50px;height:28px;border-radius:999px;
-    background:var(--bg);border:1.5px solid var(--line);transition:background .25s var(--ease),border-color .25s var(--ease),box-shadow .25s var(--ease);
-  }
-  .loy-switch::after{
-    content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;
-    background:var(--muted-dim);box-shadow:0 2px 6px rgba(0,0,0,.45);transition:transform .25s var(--ease-spring),background .2s var(--ease);
-  }
-  .loy-row input:checked + .loy-switch{background:var(--grad);border-color:transparent;box-shadow:0 0 0 3px var(--accent-dim),0 4px 14px rgba(212,215,220,.35);}
-  .loy-row input:checked + .loy-switch::after{transform:translateX(22px);background:#fff;}
-  .loy-row input:focus-visible + .loy-switch{outline:2px solid var(--gold);outline-offset:3px;}
-
-  /* строки скидки и итоги */
-  .cart-subtotal.loy-line,.co-summary div.loy-line{color:var(--gold);font-weight:700;}
-  .co-summary div.loy-cb{color:var(--accent-soft);font-size:12px;}
+  /* итоги */
   .cart-total b,.co-summary div.tot b{display:inline-flex;align-items:baseline;transform-origin:right center;font-variant-numeric:tabular-nums;}
   .cart-total b{text-shadow:0 0 22px rgba(232,234,238,.25);}
   .cart-total b.flash,.co-summary div.tot b.flash{animation:loyFlash .6s var(--ease);}
@@ -1026,11 +658,6 @@
     transition:max-width .35s var(--ease),opacity .25s var(--ease),margin .35s var(--ease);
   }
   .loy-old.show{max-width:160px;opacity:1;margin-right:10px;}
-  .success-loy{display:none;margin:12px 0 4px;padding:11px 13px;border-radius:12px;font-size:12.5px;line-height:1.6;color:var(--text);
-    background:rgba(232,234,238,.08);border:1.5px solid rgba(232,234,238,.3);text-align:center;}
-  .success-loy.show{display:block;}
-  .success-loy b{color:var(--gold);}
-  @media (prefers-reduced-motion:reduce){.loy-pill.show,.loy-block.show{animation:none;}.loy-switch,.loy-switch::after,.loy-old{transition:none;}.cart-total b.flash,.co-summary div.tot b.flash{animation:none;}}
 
   /* ===================== DARK STREET · редизайн ===================== */
   :root{--paper:#F3F3F1;--ink:#0A0A0A;--on-grad:#0A0A0A;--grad:linear-gradient(180deg,#FFFFFF 0%,#E2E2DE 100%);
@@ -1101,19 +728,9 @@
 <div id="app">
   <header id="mainHeader">
     <div class="brand">
-      <button class="icon-btn burger-btn" id="menuBtn" type="button"
-              aria-label="Открыть каталог" aria-controls="sidebarMenu" aria-expanded="false">
-        <span class="burger-lines" aria-hidden="true"><i></i><i></i><i></i></span>
-      </button>
       <span class="logo-txt" role="img" aria-label="DARK STREET">DARK<b>STREET</b></span>
     </div>
     <div class="header-actions">
-      <button class="icon-btn" id="reviewsBtn" type="button" aria-label="Отзывы">
-  <svg width="18" height="18" viewBox="0 0 24 24" stroke-width="1.4" stroke-linejoin="round">
-    <path d="M12 3.2l2.6 5.5 6 .8-4.4 4.2 1.1 6-5.3-2.9-5.3 2.9 1.1-6L3.4 9.5l6-.8L12 3.2Z"/>
-  </svg>
-  <span class="icon-badge rating-badge" id="reviewsBadge">4.8</span>
-</button>
       <button class="icon-btn" id="favBtn" aria-label="Избранное">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 20.5s-7.6-4.6-10-9.1C.5 8 2 4.7 5.3 4.1c2-.4 3.9.5 5 2.2 1.1-1.7 3-2.6 5-2.2C18.6 4.7 20 8 19.6 9c-2 4.9-7.6 11.5-7.6 11.5Z"/></svg>
         <span class="icon-badge" id="favCount">0</span>
@@ -1127,10 +744,6 @@
       </button>
     </div>
   </header>
-
-  <button class="loy-pill" id="loyPill" type="button" aria-label="Мои баллы">
-    <span class="loy-gem"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9l4-6Z"/><path d="M2 9h20M10 3 8 9l4 12 4-12-2-6"/></svg></span><span><b id="loyPillVal">0 баллов</b> <span id="loyPillRub">(0 ₽)</span></span>
-  </button>
 
   <div class="ticker-wrap">
     <div class="ticker" id="ticker"></div>
@@ -1264,160 +877,6 @@
   </div>
 </div>
 
-<!-- 1. Список отзывов -->
-<div class="sheet" id="reviewsSheet">
-  <div class="sheet-drag-zone">
-    <button class="sheet-close" data-close aria-label="Закрыть">×</button>
-    <div class="sheet-handle"></div>
-  </div>
-  <div class="sheet-inner">
-    <div class="reviews-container" id="reviewsContainer">
-
-      <h2 class="rv-title">Отзывы</h2>
-
-      <!-- сводка -->
-      <section class="rv-summary" aria-label="Средний рейтинг">
-        <div class="rv-summary-top">
-          <div class="rv-score" id="rvScore">4.8<small>/5</small></div>
-          <div class="rv-summary-meta">
-            <span class="rv-stars" id="rvSummaryStars" style="--rating:4.8" aria-hidden="true">★★★★★</span>
-            <span class="rv-count" id="rvCount">12 отзывов</span>
-          </div>
-        </div>
-        <button class="btn-primary" id="rvWriteBtn" type="button">Оставить отзыв</button>
-      </section>
-
-      <!-- список (карточки рисуются по шаблону ниже) -->
-      <div class="rv-list" id="rvList">
-        <!-- пример карточки — удали, когда подключишь данные -->
-        <article class="rv-card">
-          <header class="rv-card-head">
-            <div class="rv-avatar">И</div>
-            <div class="rv-author"><b>Иван</b><span class="rv-date">12 октября 2026</span></div>
-            <span class="rv-stars" style="--rating:5" aria-label="Оценка 5 из 5">★★★★★</span>
-          </header>
-          <p class="rv-text">Заказ привезли в тот же день, всё оригинал и аккуратно упаковано. Менеджер быстро ответил на вопросы.</p>
-        </article>
-        <article class="rv-card">
-          <header class="rv-card-head">
-            <div class="rv-avatar">А</div>
-            <div class="rv-author"><b>Алексей</b><span class="rv-date">9 октября 2026</span></div>
-            <span class="rv-stars" style="--rating:4" aria-label="Оценка 4 из 5">★★★★★</span>
-          </header>
-          <p class="rv-text">Хороший выбор жидкостей, цены адекватные. Доставка чуть задержалась, но предупредили заранее.</p>
-        </article>
-      </div>
-
-      <!-- пустое состояние: показывается, когда одобренных отзывов нет -->
-      <div class="rv-empty" id="rvEmpty" hidden>
-        <div class="rv-empty-star">★</div>
-        <div>Пока нет отзывов.<br>Станьте первым, кто поделится впечатлением!</div>
-      </div>
-
-      <!-- шаблон карточки для JS -->
-      <template id="rvCardTpl">
-        <article class="rv-card">
-          <header class="rv-card-head">
-            <div class="rv-avatar"></div>
-            <div class="rv-author"><b></b><span class="rv-date"></span></div>
-            <span class="rv-stars" style="--rating:5">★★★★★</span>
-          </header>
-          <p class="rv-text"></p>
-        </article>
-      </template>
-
-    </div>
-  </div>
-</div>
-
-
-<!-- 2. Форма «Написать отзыв» -->
-<div class="sheet" id="reviewFormSheet">
-  <div class="sheet-drag-zone">
-    <button class="sheet-close" data-close aria-label="Закрыть">×</button>
-    <div class="sheet-handle"></div>
-  </div>
-  <div class="sheet-inner">
-    <div class="pd-name" style="margin-top:4px;">Написать отзыв</div>
-    <p class="rv-form-sub">Ваша оценка помогает другим покупателям сделать выбор.</p>
-
-    <div class="label" style="margin-top:18px;">Ваша оценка</div>
-    <div class="rv-rate" id="rvRate" role="radiogroup" aria-label="Оценка от 1 до 5">
-      <!-- порядок 5→1 нужен для подсветки «все звёзды до выбранной» -->
-      <input type="radio" name="rvRating" id="rvStar5" value="5"><label for="rvStar5" title="Отлично" aria-label="5 звёзд">★</label>
-      <input type="radio" name="rvRating" id="rvStar4" value="4"><label for="rvStar4" title="Хорошо" aria-label="4 звезды">★</label>
-      <input type="radio" name="rvRating" id="rvStar3" value="3"><label for="rvStar3" title="Нормально" aria-label="3 звезды">★</label>
-      <input type="radio" name="rvRating" id="rvStar2" value="2"><label for="rvStar2" title="Плохо" aria-label="2 звезды">★</label>
-      <input type="radio" name="rvRating" id="rvStar1" value="1"><label for="rvStar1" title="Ужасно" aria-label="1 звезда">★</label>
-    </div>
-    <div class="rv-rate-hint" id="rvRateHint">Нажмите на звезду</div>
-
-    <div class="label" style="margin-top:14px;">Ваш отзыв</div>
-    <textarea id="rvText" class="text-input rv-textarea" maxlength="2000"
-              placeholder="Расскажите о качестве товаров и доставки..."></textarea>
-    <div class="rv-counter"><span id="rvTextCount">0</span> / 2000</div>
-
-    <div class="form-error" id="rvError"></div>
-
-    <button class="btn-primary" id="rvSubmitBtn" type="button" style="margin-top:6px;">Отправить на проверку</button>
-
-    <div class="rv-note"><span>🛡️</span><div>Отзыв появится в списке после проверки администратором.</div></div>
-  </div>
-</div>
-
-
-<!-- 3. «Спасибо» после отправки -->
-<div class="sheet" id="reviewSuccessSheet">
-  <div class="sheet-drag-zone">
-    <button class="sheet-close" data-close aria-label="Закрыть">×</button>
-    <div class="sheet-handle"></div>
-  </div>
-  <div class="sheet-inner">
-    <div class="success-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg>
-    </div>
-    <div class="success-title">Спасибо за отзыв!</div>
-    <div class="success-sub">Он отправлен на проверку и скоро появится в списке.</div>
-    <button class="btn-secondary" data-close>Закрыть</button>
-  </div>
-</div>
-
-<!-- Меню категорий -->
-<div class="menu-overlay" id="menuOverlay"></div>
-
-<aside class="sidebar-menu" id="sidebarMenu" aria-hidden="true" aria-label="Каталог товаров">
-  <div class="sidebar-head">
-    <h2 class="sidebar-title">Каталог товаров</h2>
-    <button class="sidebar-close" id="menuClose" type="button" aria-label="Закрыть меню">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
-    </button>
-  </div>
-
-  <nav class="sidebar-body">
-    <div class="loy-menu" id="loyMenu">
-      <span class="loy-gem"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9l4-6Z"/><path d="M2 9h20M10 3 8 9l4 12 4-12-2-6"/></svg></span>
-      <div class="loy-menu-body">
-        <div class="loy-menu-title">Мои баллы</div>
-        <div class="loy-menu-note" id="loyMenuNote"></div>
-      </div>
-      <span class="loy-chip" id="loyMenuVal">0 баллов</span>
-    </div>
-    <div class="cat-nav" id="catList"></div>
-
-    <div class="menu-reviews">
-      <button class="reviews-entry" id="menuReviewsBtn" type="button">
-        <span class="re-star" aria-hidden="true">⭐</span>
-        <span class="re-name">Отзывы</span>
-        <span class="re-badge" id="menuReviewsBadge">4.8</span>
-        <svg class="re-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>
-      </button>
-    </div>
-
-    <!-- сюда JS может подгружать дополнительные блоки -->
-    <div class="menu-dynamic" id="menuDynamic"></div>
-  </nav>
-</aside>
-
 <div class="sheet" id="cartSheet">
   <div class="sheet-drag-zone">
     <button class="sheet-close" data-close aria-label="Закрыть">×</button>
@@ -1448,25 +907,8 @@
       </div>
     </div>
 
-    <div class="loy-block" id="loyBlock">
-      <div class="loy-head">
-        <span class="loy-gem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12l4 6-10 12L2 9l4-6Z"/><path d="M2 9h20M10 3 8 9l4 12 4-12-2-6"/></svg></span>
-        <div class="loy-info">
-          <div class="loy-title">Баллы лояльности</div>
-          <div class="loy-avail" id="loyAvail"></div>
-          <div class="loy-sub" id="loySub"></div>
-        </div>
-      </div>
-      <label class="loy-row" id="loyRow">
-        <span class="loy-label" id="loyLabel">Списать баллы</span>
-        <input type="checkbox" id="loyToggle">
-        <span class="loy-switch" aria-hidden="true"></span>
-      </label>
-    </div>
-
     <div class="cart-subtotal" id="cartSubtotalRow" style="display:none;"><span>Сумма товаров</span><span id="cartSubtotal">0 ₽</span></div>
     <div class="cart-subtotal" id="cartDiscountRow" style="display:none;"><span>Скидка</span><span id="cartDiscount">0 ₽</span></div>
-    <div class="cart-subtotal loy-line" id="cartPointsRow" style="display:none;"><span>Скидка баллами</span><span id="cartPoints">−0 ₽</span></div>
     <div class="cart-total"><span>Итого</span><b id="cartTotal"><s class="loy-old" id="cartOld"></s><span id="cartNew">0 ₽</span></b></div>
     <button class="btn-primary" id="checkoutBtn">Оформить заказ</button>
   </div>
@@ -1479,55 +921,21 @@
   </div>
   <div class="sheet-inner">
     <div class="pd-name" style="margin-top:4px;">Оформление заказа</div>
-    <div class="test-badge">Выберите самовывоз или доставку и удобное время — менеджер свяжется и подтвердит заказ.</div>
-
-    <div class="label" style="margin-top:18px;">Имя</div>
-    <input type="text" id="coName" class="text-input" placeholder="Как к вам обращаться">
-
-    <div class="label" style="margin-top:15px;">Телефон</div>
-    <input type="tel" id="coPhone" class="text-input" placeholder="+7 900 000-00-00">
-
-    <div class="label" style="margin-top:18px;">Как получить заказ</div>
-    <div class="seg" id="coMode">
-      <button type="button" class="seg-btn active" data-mode="pickup">📍 Самовывоз<small>бесплатно</small></button>
-      <button type="button" class="seg-btn" data-mode="delivery">🚚 Доставка<small id="coFeeLabel">по договорённости</small></button>
-    </div>
-
-    <div class="co-box" id="coPickupBox">
-      <div class="label" style="margin-top:14px;">Пункт самовывоза</div>
-      <div class="sizes" id="coPoints" style="margin-bottom:6px;"></div>
-    </div>
-    <div class="co-box" id="coDeliveryBox" style="display:none;">
-      <div class="label" style="margin-top:14px;">Адрес доставки</div>
-      <textarea id="coAddress" class="text-input" style="min-height:64px;" placeholder="Улица, дом, подъезд, этаж, квартира"></textarea>
-      <div style="margin-top:8px;font-size:12.5px;color:var(--muted);">Район Центр — доставка по заказу. Другие районы обсуждаются с менеджером.</div>
-      <div id="coFreeHint" style="display:none;margin-top:8px;font-size:12.5px;font-weight:600;color:var(--accent-soft);"></div>
-    </div>
-
-    <div class="label" style="margin-top:15px;">Когда удобно</div>
-    <div class="seg" id="coWhen">
-      <button type="button" class="seg-btn active" data-when="asap">⚡ Как можно скорее</button>
-      <button type="button" class="seg-btn" data-when="time">🕒 Выбрать время</button>
-    </div>
-    <div class="co-box time-row" id="coTimeBox" style="display:none;margin-top:8px;">
-      <input type="date" id="coDate" class="text-input">
-      <input type="time" id="coTime" class="text-input">
-    </div>
-
-    <div class="label" style="margin-top:15px;">Комментарий к заказу</div>
-    <textarea id="coComment" class="text-input" placeholder="Вкус, цвет, пожелания (необязательно)"></textarea>
+    <div class="test-badge">Заказ оформляется в личной переписке с менеджером. Напишите ему сами — мы подставим ваш заказ в сообщение. Если написать не получается, оставьте свой юзернейм, и менеджер напишет вам первым.</div>
 
     <div class="co-summary" id="coSummary">
       <div><span>Товары</span><span id="coSumGoods">0 ₽</span></div>
-      <div id="coSumDlvRow" style="display:none;"><span>Доставка</span><span id="coSumDlv">0 ₽</span></div>
-      <div class="loy-line" id="coSumPtsRow" style="display:none;"><span>Скидка баллами</span><span id="coSumPts">−0 ₽</span></div>
       <div class="tot"><span>Итого</span><b id="coSumTotal"><s class="loy-old" id="coOld"></s><span id="coNew">0 ₽</span></b></div>
-      <div class="loy-cb" id="coSumCbRow" style="display:none;"><span>Кешбэк за заказ</span><span id="coSumCb">+0 баллов</span></div>
     </div>
 
-    <div class="form-error" id="coError"></div>
+    <button class="btn-primary" id="coWriteBtn" style="margin-top:18px;">Написать менеджеру</button>
 
-    <button class="btn-primary" id="coSubmitBtn" style="margin-top:18px;">Подтвердить заказ</button>
+    <div class="co-or">или</div>
+
+    <div class="label" style="margin-top:10px;">Ваш юзернейм в Telegram</div>
+    <input type="text" id="coUsername" class="text-input" placeholder="@username" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <div class="form-error" id="coError"></div>
+    <button class="btn-secondary" id="coSubmitBtn" style="margin-top:12px;">Оставить юзернейм — менеджер напишет сам</button>
   </div>
 </div>
 
@@ -1541,8 +949,8 @@
       <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12l6 6L20 6"/></svg>
     </div>
     <div class="success-title">Заказ оформлен</div>
-    <div class="success-sub">Мы свяжемся с вами в этом чате, чтобы подтвердить заказ и обсудить доставку.<br>Номер заказа: <span id="orderNo"></span></div>
-    <div class="success-loy" id="successLoy"></div>
+    <div class="success-sub" id="successText">Менеджер свяжется с вами, чтобы подтвердить заказ.</div>
+    <div class="success-sub">Номер заказа: <span id="orderNo"></span></div>
     <button class="btn-secondary" data-close>Продолжить покупки</button>
   </div>
 </div>
@@ -1606,10 +1014,6 @@ const SWATCHES = [
   'radial-gradient(circle at 75% 15%,rgba(255,255,255,.18),transparent 45%),linear-gradient(155deg,#A5A5A0,#050505 92%)',
   'radial-gradient(circle at 75% 15%,rgba(255,255,255,.18),transparent 45%),linear-gradient(155deg,#262626,#050505 92%)'
 ];
-let DELIVERY_FEE = 0;
-let FREE_DELIVERY_FROM = 0; // бесплатная доставка от этой суммы товаров (после промокода); 0 — отключено
-function deliveryFeeFor(goods){ return (FREE_DELIVERY_FROM > 0 && goods >= FREE_DELIVERY_FROM) ? 0 : DELIVERY_FEE; }
-let PICKUP_POINTS = ['Центр'];
 let SHOP_CONTACT = 'darkstreetmanager'; // Telegram-аккаунт менеджера (без @); сервер может переопределить через SHOP_CONTACT
 const fmt = n => (Number.isInteger(n) ? n.toLocaleString('ru-RU')
   : n.toLocaleString('ru-RU', { minimumFractionDigits:2, maximumFractionDigits:2 })) + ' ₽';
@@ -1626,35 +1030,7 @@ let PRODUCTS = [];
 let cart = [];
 let appliedPromo = null; // { code, type, value }
 
-// --- баллы лояльности: 1 балл = 0,5 ₽ ---
-const LOYALTY = { maxPercent: 30, cashbackPercent: 5, pointValue: 0.5 };
-let loyaltyBalance = null;   // null — баланс неизвестен (не Telegram / ошибка сети)
-let usePoints = false;       // тумблер «Списать баллы»
-
 const round2 = n => Math.round(n * 100) / 100;
-const fmtPts = n => Number(n).toLocaleString('ru-RU');
-const ptsWord = n => {
-  const a = Math.abs(n) % 100, b = a % 10;
-  if (a > 10 && a < 20) return 'баллов';
-  if (b === 1) return 'балл';
-  if (b >= 2 && b <= 4) return 'балла';
-  return 'баллов';
-};
-const pts = n => `${fmtPts(n)} ${ptsWord(n)}`;
-
-// Лимит: скидка в рублях (баллы × 0,5) не больше maxPercent от суммы товаров goods (после промокода).
-function loyaltyCalc(goods){
-  const pv = LOYALTY.pointValue;
-  const balance = Number.isFinite(loyaltyBalance) ? Math.max(0, Math.floor(loyaltyBalance)) : 0;
-  const cap = Math.max(0, Math.floor(goods * LOYALTY.maxPercent / 100 / pv + 1e-9));
-  const avail = Math.max(0, Math.min(balance, cap));
-  const spend = (usePoints && avail > 0) ? avail : 0;
-  return { balance, cap, avail, spend,
-           balanceRub: round2(balance * pv), availRub: round2(avail * pv), spendRub: round2(spend * pv) };
-}
-
-// Кешбэк баллами: round((сумма_рублями × 5%) / 0,5), округление «half up» — как на сервере.
-const cashbackPoints = paid => Math.floor(paid * LOYALTY.cashbackPercent / 100 / LOYALTY.pointValue + 0.5 + 1e-9);
 
 // Плавный пересчёт суммы: число «докручивается» до нового значения, блок коротко подсвечивается.
 function tweenMoney(el, to, host){
@@ -1683,40 +1059,6 @@ function setTotalDisplay(hostId, oldId, newId, before, after, showOld){
   tweenMoney(document.getElementById(newId), after, document.getElementById(hostId));
 }
 
-function renderLoyaltyBadges(){
-  const known = Number.isFinite(loyaltyBalance);
-  const b = known ? Math.floor(loyaltyBalance) : 0;
-  const rub = fmt(round2(b * LOYALTY.pointValue));
-  const pill = document.getElementById('loyPill');
-  const menu = document.getElementById('loyMenu');
-  if (pill){
-    pill.classList.toggle('show', known);
-    document.getElementById('loyPillVal').textContent = pts(b);
-    document.getElementById('loyPillRub').textContent = `(${rub})`;
-  }
-  if (menu){
-    menu.classList.toggle('show', known);
-    document.getElementById('loyMenuVal').textContent = pts(b);
-    document.getElementById('loyMenuNote').textContent =
-      `≈ ${rub} · 1 балл = ${LOYALTY.pointValue.toLocaleString('ru-RU')} ₽. Кешбэк ${LOYALTY.cashbackPercent}% баллами, оплата баллами до ${LOYALTY.maxPercent}% заказа.`;
-  }
-}
-
-async function loadLoyalty(){
-  const user = tg?.initDataUnsafe?.user;
-  if (!user?.id){ loyaltyBalance = null; renderLoyaltyBadges(); return; }
-  try {
-    const res = await fetch(`/api/loyalty/balance?telegram_id=${encodeURIComponent(user.id)}`);
-    if (!res.ok) throw new Error('loyalty');
-    const data = await res.json();
-    loyaltyBalance = Number(data.points_balance);
-    if (!Number.isFinite(loyaltyBalance)) loyaltyBalance = null;
-  } catch(e){
-    loyaltyBalance = null;
-  }
-  renderLoyaltyBadges();
-  if (typeof updateCartTotals === 'function') updateCartTotals();
-}
 let promoFormOpen = false;
 let activeCategory = 'Все';
 let activeSub = 'Все';
@@ -1991,7 +1333,7 @@ function renderGrid(keepViewport){
   if (searchState.active){
     currentList = sortMode==='default' ? searchState.results : applySort(searchState.results);
   } else {
-    const base = PRODUCTS.filter(menuPass);   // фильтр из бокового меню
+    const base = PRODUCTS;
     const list = activeCategory==='Все' ? base : base.filter(p=>p.category===activeCategory && inSub(p, activeSub));
     currentList = applySort(list);
   }
@@ -2348,34 +1690,13 @@ function updateCartTotals(){
   const subtotal = cartSubtotal();
   const discount = appliedPromo ? computePromoDiscount(appliedPromo, subtotal) : 0;
   const goods = subtotal - discount;
-  const loy = loyaltyCalc(goods);
-  const total = round2(goods - loy.spendRub);
+  const total = round2(goods);
 
-  document.getElementById('cartSubtotalRow').style.display = (discount > 0 || loy.spend > 0) ? 'flex' : 'none';
+  document.getElementById('cartSubtotalRow').style.display = discount > 0 ? 'flex' : 'none';
   document.getElementById('cartSubtotal').textContent = fmt(subtotal);
   document.getElementById('cartDiscountRow').style.display = discount > 0 ? 'flex' : 'none';
   document.getElementById('cartDiscount').textContent = '−' + fmt(discount);
-  document.getElementById('cartPointsRow').style.display = loy.spend > 0 ? 'flex' : 'none';
-  document.getElementById('cartPoints').textContent = '−' + fmt(loy.spendRub);
-  setTotalDisplay('cartTotal', 'cartOld', 'cartNew', goods, total, loy.spend > 0);
-
-  // блок программы лояльности
-  const block = document.getElementById('loyBlock');
-  const showBlock = Number.isFinite(loyaltyBalance) && cart.length > 0;
-  block.classList.toggle('show', showBlock);
-  if (showBlock){
-    const toggle = document.getElementById('loyToggle');
-    document.getElementById('loyAvail').innerHTML =
-      `Доступно: <b>${pts(loy.avail)}</b> | Скидка: до ${LOYALTY.maxPercent}% (−<b>${fmt(loy.availRub)}</b>)`;
-    document.getElementById('loySub').textContent =
-      `На балансе: ${pts(loy.balance)} (${fmt(loy.balanceRub)}) · 1 балл = ${LOYALTY.pointValue.toLocaleString('ru-RU')} ₽`;
-    toggle.disabled = loy.avail <= 0;
-    toggle.checked = loy.spend > 0;
-    document.getElementById('loyRow').classList.toggle('off', loy.avail <= 0);
-    document.getElementById('loyLabel').innerHTML = loy.avail > 0
-      ? `Списать <b>${pts(loy.avail)}</b>`
-      : 'Списывать пока нечего';
-  }
+  setTotalDisplay('cartTotal', 'cartOld', 'cartNew', goods, total, false);
   if (typeof coState !== 'undefined' && coState && document.getElementById('coSumTotal')) updateCheckoutSummary();
 
   const toggle = document.getElementById('promoToggle');
@@ -2458,15 +1779,7 @@ document.getElementById('promoRemoveBtn').onclick = () => {
   document.getElementById('promoError').textContent = '';
   updateCartTotals();
 };
-document.getElementById('loyToggle').addEventListener('change', e => {
-  usePoints = e.target.checked;
-  updateCartTotals();
-  if (tg) tg.HapticFeedback?.selectionChanged?.();
-});
-document.getElementById('loyPill').onclick = () => {
-  showToast(`1 балл = ${LOYALTY.pointValue.toLocaleString('ru-RU')} ₽ · кешбэк ${LOYALTY.cashbackPercent}% баллами · баллами можно оплатить до ${LOYALTY.maxPercent}% заказа`, 'success');
-};
-document.getElementById('bagBtn').onclick = () => { renderCart(); loadLoyalty(); openSheet('cartSheet'); };
+document.getElementById('bagBtn').onclick = () => { renderCart(); openSheet('cartSheet'); };
 
 document.getElementById('favBtn').onclick = () => { renderFavorites(); openSheet('favSheet'); };
 document.getElementById('profileBtn').onclick = () => { openSheet('profileSheet'); renderProfile(); };
@@ -2539,7 +1852,6 @@ function renderOrders(orders){
           <div class="order-status status-${o.status}">${ORDER_STATUS_LABEL[o.status] || o.status}</div>
         </div>
         <div class="order-items">${itemsText}</div>
-        ${o.delivery ? `<div class="order-dlv">${deliveryLine(o.delivery)}</div>` : ''}
         ${o.delivery && o.delivery.fee ? `<div class="order-total" style="font-size:11px;color:var(--muted);padding:0;"><span>Доставка</span><span>${fmt(o.delivery.fee)}</span></div>` : ''}
         ${o.discount > 0 ? `<div class="order-total" style="font-size:11px;color:var(--muted);padding:0;"><span>Промокод ${o.promo_code||''}</span><span>−${fmt(o.discount)}</span></div>` : ''}
         <div class="order-total"><span>Итого</span><b>${fmt(o.total)}</b></div>
@@ -2655,143 +1967,72 @@ async function submitQuestion(){
 document.getElementById('qSubmitBtn').onclick = submitQuestion;
 
 
-// --- Оформление: самовывоз / доставка / время ---
-var coState = { mode:'pickup', point:null, when:'asap' };
-
-function pad2(n){ return String(n).padStart(2,'0'); }
-function todayStr(){ const d = new Date(); return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+// --- Оформление: написать менеджеру / оставить юзернейм ---
+var coState = {};
 
 function checkoutTotal(){
   const subtotal = cartSubtotal();
   const discount = appliedPromo ? computePromoDiscount(appliedPromo, subtotal) : 0;
-  const goods = subtotal - discount;
-  const fee = coState.mode === 'delivery' ? deliveryFeeFor(goods) : 0;
-  const loy = loyaltyCalc(goods);
-  const total = round2(goods - loy.spendRub + fee);
-  const cashback = Number.isFinite(loyaltyBalance) ? cashbackPoints(total) : 0;   // баллы за сумму, оплаченную рублями
-  return { subtotal, discount, fee, points: loy.spend, pointsRub: loy.spendRub, cashback, total };
+  return { subtotal, discount, total: round2(subtotal - discount) };
 }
 
 function updateCheckoutSummary(){
   const s = checkoutTotal();
   document.getElementById('coSumGoods').textContent = fmt(s.subtotal - s.discount);
-  const isDlv = coState.mode === 'delivery';
-  document.getElementById('coSumDlvRow').style.display = isDlv ? 'flex' : 'none';
-  document.getElementById('coSumDlv').textContent = s.fee ? fmt(s.fee) : (DELIVERY_FEE ? 'бесплатно' : 'по договорённости');
-  const goodsSum = s.subtotal - s.discount;
-  document.getElementById('coFeeLabel').textContent = !DELIVERY_FEE ? 'по договорённости' : (isDlv && !s.fee ? 'бесплатно' : '+' + fmt(DELIVERY_FEE));
-  const hint = document.getElementById('coFreeHint');
-  if (hint){
-    if (isDlv && FREE_DELIVERY_FROM > 0){
-      hint.style.display = '';
-      hint.textContent = s.fee ? '✓ Бесплатная доставка — заказ от ' + fmt(FREE_DELIVERY_FROM)
-                               : 'Добавьте товаров ещё на ' + fmt(FREE_DELIVERY_FROM - goodsSum) + ' — и доставка будет бесплатной';
-    } else hint.style.display = 'none';
-  }
-  document.getElementById('coSumPtsRow').style.display = s.points ? 'flex' : 'none';
-  document.getElementById('coSumPts').textContent = '−' + fmt(s.pointsRub);
-  setTotalDisplay('coSumTotal', 'coOld', 'coNew', round2(s.subtotal - s.discount + s.fee), s.total, s.points > 0);
-  document.getElementById('coSumCbRow').style.display = s.cashback > 0 ? 'flex' : 'none';
-  document.getElementById('coSumCb').textContent = `+${pts(s.cashback)} (${fmt(round2(s.cashback * LOYALTY.pointValue))})`;
+  setTotalDisplay('coSumTotal', 'coOld', 'coNew', s.total, s.total, false);
 }
 
-function renderCheckoutOpts(){
-  if (!coState.point || !PICKUP_POINTS.includes(coState.point)) coState.point = PICKUP_POINTS[0];
-  const box = document.getElementById('coPoints');
-  box.innerHTML = PICKUP_POINTS.map(p => `<button type="button" class="size-btn ${p===coState.point?'active':''}" data-point="${p}">${p}</button>`).join('');
-  box.querySelectorAll('.size-btn').forEach(b => b.onclick = () => { coState.point = b.dataset.point; renderCheckoutOpts(); });
-  document.getElementById('coPickupBox').style.display = coState.mode === 'pickup' ? '' : 'none';
-  document.getElementById('coDeliveryBox').style.display = coState.mode === 'delivery' ? '' : 'none';
-  document.getElementById('coTimeBox').style.display = coState.when === 'time' ? '' : 'none';
-  document.querySelectorAll('#coMode .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.mode === coState.mode));
-  document.querySelectorAll('#coWhen .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.when === coState.when));
-  const dateEl = document.getElementById('coDate');
-  dateEl.min = todayStr();
-  if (!dateEl.value) dateEl.value = todayStr();
-  updateCheckoutSummary();
-}
-document.querySelectorAll('#coMode .seg-btn').forEach(b => b.onclick = () => { coState.mode = b.dataset.mode; renderCheckoutOpts(); });
-document.querySelectorAll('#coWhen .seg-btn').forEach(b => b.onclick = () => { coState.when = b.dataset.when; renderCheckoutOpts(); });
-renderCheckoutOpts();
-
-function deliveryLine(d){
-  if (!d) return '';
-  const place = d.mode === 'delivery' ? `🚚 Доставка: ${d.address||'—'}` : `📍 Самовывоз: ${d.point||'—'}`;
-  let when = '⚡ Как можно скорее';
-  if (!d.asap && d.date){
-    const [y,m,dd] = d.date.split('-');
-    when = `🕒 ${dd}.${m} в ${d.time||''}`;
-  }
-  return `${place}<br>${when}`;
+function orderText(){
+  const s = checkoutTotal();
+  const lines = cart.map(i => `· ${i.name}${i.size ? ' (' + i.size + ')' : ''} × ${i.qty} — ${fmt(i.price * i.qty)}`);
+  return 'Здравствуйте! Хочу оформить заказ:\n' + lines.join('\n')
+    + (appliedPromo ? `\nПромокод: ${appliedPromo.code}` : '')
+    + `\nИтого: ${fmt(s.total)}`;
 }
 
 document.getElementById('checkoutBtn').onclick = () => {
   if (cart.length===0) return;
   document.getElementById('coError').textContent = '';
-  renderCheckoutOpts();
+  const u = tg?.initDataUnsafe?.user?.username;
+  const un = document.getElementById('coUsername');
+  if (u && !un.value) un.value = '@' + u;
+  updateCheckoutSummary();
   openSheet('checkoutSheet');
 };
 
-async function submitOrder(){
-  const nameEl = document.getElementById('coName');
-  const phoneEl = document.getElementById('coPhone');
-  const name = nameEl.value.trim();
-  const phone = phoneEl.value.trim();
-  const comment = document.getElementById('coComment').value.trim();
+// mode: 'self' — клиент сам пишет менеджеру; 'username' — менеджер пишет клиенту по юзернейму
+async function submitOrder(mode){
   const errEl = document.getElementById('coError');
+  const unEl = document.getElementById('coUsername');
   errEl.textContent = '';
-  nameEl.classList.remove('err'); phoneEl.classList.remove('err');
+  unEl.classList.remove('err');
+  if (cart.length===0){ errEl.textContent = 'Корзина пуста'; return; }
 
-  if (!name || !phone){
-    errEl.textContent = 'Укажите имя и телефон';
-    if (!name) nameEl.classList.add('err');
-    if (!phone) phoneEl.classList.add('err');
-    if (tg) tg.HapticFeedback?.notificationOccurred('error');
-    return;
-  }
-  if (cart.length===0){
-    errEl.textContent = 'Корзина пуста';
-    return;
-  }
-
-  const addrEl = document.getElementById('coAddress');
-  const dateEl = document.getElementById('coDate');
-  const timeEl = document.getElementById('coTime');
-  [addrEl, dateEl, timeEl].forEach(e => e.classList.remove('err'));
-  const fail = (msg, el) => {
-    errEl.textContent = msg;
-    if (el) el.classList.add('err');
-    if (tg) tg.HapticFeedback?.notificationOccurred('error');
-  };
-  if (coState.mode === 'delivery' && addrEl.value.trim().length < 5){
-    return fail('Укажите адрес доставки', addrEl);
-  }
-  if (coState.when === 'time'){
-    if (!dateEl.value || !timeEl.value) return fail('Выберите дату и время', !timeEl.value ? timeEl : dateEl);
-    if (new Date(`${dateEl.value}T${timeEl.value}`) < new Date(Date.now() - 60000)) return fail('Это время уже прошло — выберите другое', timeEl);
+  let username = unEl.value.trim().replace(/^@+/, '');
+  if (mode === 'username'){
+    if (!/^[A-Za-z0-9_]{4,32}$/.test(username)){
+      errEl.textContent = 'Укажите юзернейм Telegram, например @username';
+      unEl.classList.add('err');
+      if (tg) tg.HapticFeedback?.notificationOccurred('error');
+      return;
+    }
+  } else {
+    username = tg?.initDataUnsafe?.user?.username || (/^[A-Za-z0-9_]{4,32}$/.test(username) ? username : '');
   }
 
-  const btn = document.getElementById('coSubmitBtn');
+  const btn = document.getElementById(mode === 'self' ? 'coWriteBtn' : 'coSubmitBtn');
+  const label = btn.textContent;
   btn.disabled = true;
   btn.textContent = 'Отправка...';
 
+  const text = orderText();
   const tgUser = tg?.initDataUnsafe?.user || null;
-  const subtotal = cartSubtotal();
-  const discount = appliedPromo ? computePromoDiscount(appliedPromo, subtotal) : 0;
   const payload = {
-    name, phone, comment,
+    contact_mode: mode,
+    username: username || null,
     items: cart.map(i => ({ id: i.id, name: i.name, size: i.size, qty: i.qty, price: i.price })),
     total: checkoutTotal().total,
-    delivery: {
-      mode: coState.mode,
-      point: coState.mode === 'pickup' ? coState.point : null,
-      address: coState.mode === 'delivery' ? addrEl.value.trim() : null,
-      asap: coState.when === 'asap',
-      date: coState.when === 'time' ? dateEl.value : null,
-      time: coState.when === 'time' ? timeEl.value : null,
-    },
     promo_code: appliedPromo ? appliedPromo.code : undefined,
-    points_to_spend: loyaltyCalc(subtotal - discount).spend,   // сколько баллов списать (0, если тумблер выключен)
     tg_user: tgUser ? { id: tgUser.id, username: tgUser.username } : null,
   };
 
@@ -2807,43 +2048,33 @@ async function submitOrder(){
     }
     const data = await res.json();
     document.getElementById('orderNo').textContent = 'DS-' + data.order_id;
-    const loyBox = document.getElementById('successLoy');
-    if (Number.isFinite(data.points_balance)){
-      loyaltyBalance = data.points_balance;
-      loyBox.innerHTML = `${data.points_spent > 0 ? `Оплачено баллами: <b>${pts(data.points_spent)}</b> (${fmt(data.points_discount || 0)})<br>` : ''}`
-        + `Начислено кешбэка: <b>+${pts(data.cashback || 0)}</b><br>`
-        + `Баланс: <b>${pts(data.points_balance)}</b> (${fmt(round2(data.points_balance * LOYALTY.pointValue))})`;
-      loyBox.classList.add('show');
-    } else {
-      loyBox.classList.remove('show');
-      loadLoyalty();
-    }
-    usePoints = false;
-    renderLoyaltyBadges();
+    document.getElementById('successText').textContent = mode === 'self'
+      ? 'Заказ передан. Напишите менеджера в открывшемся чате — он подтвердит заказ.'
+      : `Менеджер напишет вам в Telegram (@${username}), чтобы подтвердить заказ.`;
     refreshProducts(true);
     cart = [];
     appliedPromo = null;
     updateBadge();
-    document.getElementById('coName').value = '';
-    document.getElementById('coPhone').value = '';
-    document.getElementById('coComment').value = '';
-    addrEl.value = ''; timeEl.value = '';
-    coState.when = 'asap'; coState.mode = 'pickup'; renderCheckoutOpts();
+    unEl.value = '';
     openSheet('successSheet');
-    showToast('Заказ отправлен на обработку', 'success');
+    if (mode === 'self'){
+      const url = 'https://t.me/' + SHOP_CONTACT + '?text=' + encodeURIComponent(text + `\nНомер заказа: DS-${data.order_id}`);
+      if (tg?.openTelegramLink) tg.openTelegramLink(url); else window.open(url, '_blank');
+    }
+    showToast('Заказ отправлен', 'success');
     if (tg) tg.HapticFeedback?.notificationOccurred('success');
   } catch(e){
     errEl.textContent = e.message;
     showToast(e.message, 'error');
     if (tg) tg.HapticFeedback?.notificationOccurred('error');
     refreshProducts(true);
-    loadLoyalty();
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Подтвердить заказ';
+    btn.textContent = label;
   }
 }
-document.getElementById('coSubmitBtn').onclick = submitOrder;
+document.getElementById('coWriteBtn').onclick = () => submitOrder('self');
+document.getElementById('coSubmitBtn').onclick = () => submitOrder('username');
 
 function openSheet(id){
   closeSheets();
@@ -2904,20 +2135,8 @@ footContact.textContent = '@' + SHOP_CONTACT;
 footContact.onclick = openContact;
 fetch('/api/config').then(r => r.ok ? r.json() : null).then(c => {
   if (c && c.contact){ SHOP_CONTACT = c.contact; footContact.textContent = '@' + SHOP_CONTACT; }
-  if (c && Number.isFinite(c.delivery_fee)) DELIVERY_FEE = c.delivery_fee;
-  if (c && Number.isFinite(c.free_delivery_from)) FREE_DELIVERY_FROM = c.free_delivery_from;
-  if (c && Array.isArray(c.pickup_points) && c.pickup_points.length) PICKUP_POINTS = c.pickup_points;
-  if (c && Number.isFinite(c.max_points_percent)) LOYALTY.maxPercent = c.max_points_percent;
-  if (c && Number.isFinite(c.cashback_percent)) LOYALTY.cashbackPercent = c.cashback_percent;
-  if (c && Number.isFinite(c.point_value) && c.point_value > 0) LOYALTY.pointValue = c.point_value;
-  renderLoyaltyBadges();
-  renderCheckoutOpts();
   updateCartTotals();
 }).catch(() => {});
-
-// --- баланс баллов: при открытии и при возврате в приложение ---
-loadLoyalty();
-document.addEventListener('visibilitychange', () => { if (!document.hidden) loadLoyalty(); });
 
 // --- 21+ ---
 (function ageGate(){
@@ -3132,7 +2351,7 @@ function runSearch(rawQuery){
   const sw = swapLayout(text);  if (sw) pushVariant(sw, 6);
   const tr = translit(text);    if (tr) pushVariant(tr, 6);
 
-  let pool = PRODUCTS.filter(menuPass);   // поиск идёт внутри выбранной категории
+  let pool = PRODUCTS;
   if (maxPrice != null) pool = pool.filter(p => p.price <= maxPrice);
   if (minPrice != null) pool = pool.filter(p => p.price >= minPrice);
 
@@ -3448,482 +2667,7 @@ function onQuickAddClick(e){
 grid.addEventListener('click', onQuickAddClick, true);
 document.getElementById('favGrid').addEventListener('click', onQuickAddClick, true);
 
-/* =====================================================================
-   БОКОВОЕ МЕНЮ КАТЕГОРИЙ
-   ===================================================================== */
 
-// Соответствие пунктов меню реальным категориям из products.json.
-// Меняй список cats / условие test под свой ассортимент.
-const MENU_MAP = {
-  all:  { label:'Все товары' },
-  vape: { label:'Жидкости и расходники', cats:['Одноразки','Жидкость','Поды','Расходники','Ватки'] },
-  chew: { label:'Снюс', cats:['Шайбы'] },
-  cigs: { label:'Импортные сигареты / сигариллы', cats:['Сигареты'] },
-  sale: { label:'РАСПРОДАЖА', test: p => p.badge === 'sale' || (p.old_price > p.price) }
-};
-
-// null = фильтра нет. var, чтобы функции были доступны из renderGrid/runSearch в любой момент.
-var menuFilter = null;
-function menuPass(p){ return !menuFilter || menuFilter.test(p); }
-
-(function initSideMenu(){
-  const sidebar  = document.getElementById('sidebarMenu');
-  const overlay  = document.getElementById('menuOverlay');
-  const burger   = document.getElementById('menuBtn');
-  const closeBtn = document.getElementById('menuClose');
-  const catList  = document.getElementById('catList');
-  if (!sidebar || !overlay || !burger || !catList) return;
-
-  let lastFocus = null;
-  const isOpen = () => sidebar.classList.contains('active');
-
-  /* ---------- открытие / закрытие ---------- */
-  function openMenu(){
-    if (isOpen()) return;
-    navTree = buildTree(); navPath = []; navDir = ''; renderNav();
-    lastFocus = document.activeElement;
-    if (typeof searchInput !== 'undefined') searchInput.blur();
-    sidebar.classList.add('active');
-    overlay.classList.add('active');
-    document.body.classList.add('menu-open');
-    sidebar.setAttribute('aria-hidden', 'false');
-    burger.setAttribute('aria-expanded', 'true');
-    try { tg?.BackButton.show(); tg?.BackButton.onClick(navBack); } catch(e){}
-    setTimeout(() => closeBtn.focus({ preventScroll:true }), 50);
-  }
-  function closeMenu(){
-    if (!isOpen()) return;
-    sidebar.classList.remove('active');
-    overlay.classList.remove('active');
-    document.body.classList.remove('menu-open');
-    sidebar.setAttribute('aria-hidden', 'true');
-    burger.setAttribute('aria-expanded', 'false');
-    try { tg?.BackButton.offClick(navBack); tg?.BackButton.hide(); } catch(e){}
-    if (lastFocus && lastFocus.focus) lastFocus.focus({ preventScroll:true });
-  }
-
-  burger.addEventListener('click', () => isOpen() ? closeMenu() : openMenu());
-  closeBtn.addEventListener('click', closeMenu);
-  overlay.addEventListener('click', closeMenu);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && isOpen()) navBack(); });
-  overlay.addEventListener('touchmove', e => e.preventDefault(), { passive:false });
-
-  let sx = 0, sy = 0;
-  sidebar.addEventListener('touchstart', e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; }, { passive:true });
-  sidebar.addEventListener('touchend', e => {
-    const t = e.changedTouches[0], dx = t.clientX - sx, dy = t.clientY - sy;
-    if (dx < -70 && Math.abs(dx) > Math.abs(dy) * 1.5) closeMenu();
-  }, { passive:true });
-
-  /* ---------- навигация по уровням: раздел → категория → бренд ---------- */
-  const CHEV_R = '<svg class="cat-arrow" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg>';
-  const CHEV_L = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';
-  let navTree = [], navPath = [], navDir = '';
-
-  function brandNodes(key, cat){
-    return subsFor(cat).map(b => ({
-      label:b, key, cat, brand:b, kids:[],
-      count: PRODUCTS.filter(p => p.category === cat && inSub(p, b)).length
-    }));
-  }
-  function buildTree(){
-    const root = [];
-    for (const [key, def] of Object.entries(MENU_MAP)){
-      if (key === 'all') continue;
-      const cats  = (def.cats || []).filter(c => PRODUCTS.some(p => p.category === c));
-      const count = PRODUCTS.filter(p => def.test ? def.test(p) : cats.includes(p.category)).length;
-      let kids = [];
-      if (cats.length > 1){
-        kids = cats.map(c => ({
-          label:c, key, cat:c,
-          count: PRODUCTS.filter(p => p.category === c).length,
-          kids: brandNodes(key, c)
-        }));
-      } else if (cats.length === 1){
-        kids = brandNodes(key, cats[0]);
-      }
-      root.push({ label:def.label, key, count, kids, sale:key === 'sale' });
-    }
-    return root;
-  }
-
-  const isCur = n => !!menuFilter && menuFilter.key === n.key
-    && (menuFilter.sub || null) === (n.cat || null)
-    && (menuFilter.brand || null) === (n.brand || null);
-
-  function renderNav(){
-    const node = navPath[navPath.length - 1];
-    const kids = node ? node.kids : navTree;
-    let html = '';
-    if (node){
-      html += `<button class="nav-back" type="button" data-nav="back">${CHEV_L}Назад</button>` +
-        `<button class="nav-all${isCur(node) ? ' current' : ''}" type="button" data-nav="all">` +
-          `<span class="nav-txt"><b>${escHtml(node.label)}</b><small>Все товары категории</small></span>` +
-          `<em>${node.count}</em></button>`;
-    }
-    html += '<ul class="cat-list">';
-    if (!node){
-      html += `<li class="cat-item"><button class="cat-link${!menuFilter ? ' current' : ''}" type="button" data-nav="home"><span class="cat-name">Все товары</span></button></li>`;
-    }
-    html += kids.map((n, i) =>
-      `<li class="cat-item${n.sale ? ' cat-sale' : ''}"><button class="cat-link${isCur(n) && !n.kids.length ? ' current' : ''}" type="button" data-i="${i}">` +
-        `<span class="cat-name">${escHtml(n.label)}</span>` +
-        (n.sale ? '<span class="cat-badge">HOT</span>' : '') +
-        (node ? `<span class="cnt">${n.count}</span>` : '') +
-        (n.kids.length ? CHEV_R : '') +
-      `</button></li>`
-    ).join('');
-    html += '</ul>';
-    catList.innerHTML = `<div class="nav-panel ${navDir}">${html}</div>`;
-    const body = sidebar.querySelector('.sidebar-body');
-    if (body) body.scrollTop = 0;
-  }
-
-  function navBack(){
-    if (navPath.length){ navPath.pop(); navDir = 'back'; renderNav(); }
-    else closeMenu();
-  }
-  function markCurrent(){ if (isOpen()){ navDir = ''; renderNav(); } }
-
-  /* ---------- бейдж активной категории над товарами ---------- */
-  const bar = document.createElement('div');
-  bar.className = 'cat-bar';
-  bar.hidden = true;
-  document.querySelector('.filters-row').before(bar);
-
-  function renderBadge(){
-    if (!menuFilter){ bar.hidden = true; bar.innerHTML = ''; return; }
-    const n = PRODUCTS.filter(menuPass).length;
-    bar.innerHTML =
-      `<span class="cat-pill"><b>${escHtml(menuFilter.label)}</b><em>${n}</em></span>` +
-      `<button class="cat-reset" type="button">Все товары</button>`;
-    bar.hidden = false;
-  }
-  bar.addEventListener('click', e => { if (e.target.closest('.cat-reset')) applyMenuFilter('all'); });
-
-  /* ---------- применение фильтра ---------- */
-  function applyMenuFilter(key, subCat, brand){
-    const def = MENU_MAP[key];
-    if (!def) return;
-    if (key === 'all') menuFilter = null;
-    else if (subCat)   menuFilter = { key, sub:subCat, brand:brand || null,
-                         label:[def.label, subCat, brand].filter(Boolean).join(' · '),
-                         test: brand ? (p => p.category === subCat && inSub(p, brand)) : (p => p.category === subCat) };
-    else               menuFilter = { key, sub:null,   label:def.label, test:def.test || (p => def.cats.includes(p.category)) };
-
-    activeCategory = 'Все'; activeSub = 'Все';
-    filtersEl.querySelectorAll('.chip').forEach(c => c.classList.toggle('active', c.dataset.cat === 'Все'));
-    renderSubFilters();
-
-    if (searchState.active){
-      const r = runSearch(searchState.query);
-      Object.assign(searchState, { results:r.results, note:r.note, maxPrice:r.maxPrice, minPrice:r.minPrice });
-      renderSearchInfo();
-    }
-    renderGrid(true);
-    renderBadge();
-    markCurrent();
-  }
-
-  function scrollToCatalog(){
-    const top = document.getElementById('searchWrap').getBoundingClientRect().top + window.scrollY - 70;
-    window.scrollTo({ top:Math.max(0, top), behavior:'smooth' });
-  }
-
-  /* ---------- клики по пунктам меню ---------- */
-  catList.addEventListener('click', e => {
-    const b = e.target.closest('button');
-    if (!b) return;
-    const nav = b.dataset.nav;
-    if (nav === 'back'){ navBack(); return; }
-    if (nav === 'home'){ pick('all'); return; }
-    if (nav === 'all'){
-      const n = navPath[navPath.length - 1];
-      if (n) pick(n.key, n.cat || null, null);
-      return;
-    }
-    if (b.dataset.i === undefined) return;
-    const parent = navPath[navPath.length - 1];
-    const n = (parent ? parent.kids : navTree)[+b.dataset.i];
-    if (!n) return;
-    if (n.kids.length){ navPath.push(n); navDir = 'fwd'; renderNav(); }
-    else pick(n.key, n.cat || null, n.brand || null);
-  });
-
-  function pick(key, subCat, brand){
-    applyMenuFilter(key, subCat, brand);
-    closeMenu();
-    setTimeout(scrollToCatalog, 120);
-  }
-
-  // клик по старому чипу категории отменяет фильтр меню (capture — раньше штатного обработчика)
-  filtersEl.addEventListener('click', e => {
-    const chip = e.target.closest('.chip');
-    if (!chip || !menuFilter) return;
-    menuFilter = null;
-    renderBadge(); markCurrent();
-    if (chip.dataset.cat === activeCategory) renderGrid(true);
-  }, true);
-})();
-
-/* ===================== ОТЗЫВЫ ===================== */
-(function initReviews(){
-  'use strict';
-
-  const API_URL     = '/api/reviews';
-  const SUCCESS_MSG = 'Ваш отзыв отправлен на модерацию и появится после проверки администратором.';
-  const RATING_HINTS = { 1:'Ужасно', 2:'Плохо', 3:'Нормально', 4:'Хорошо', 5:'Отлично' };
-
-  const $ = id => document.getElementById(id);
-  const el = {
-    headerBtn:   $('reviewsBtn'),
-    menuBtn:     $('menuReviewsBtn'),
-    badgeHeader: $('reviewsBadge'),
-    badgeMenu:   $('menuReviewsBadge'),
-    score:       $('rvScore'),
-    sumStars:    $('rvSummaryStars'),
-    count:       $('rvCount'),
-    list:        $('rvList'),
-    empty:       $('rvEmpty'),
-    tpl:         $('rvCardTpl'),
-    writeBtn:    $('rvWriteBtn'),
-    rate:        $('rvRate'),
-    rateHint:    $('rvRateHint'),
-    text:        $('rvText'),
-    textCount:   $('rvTextCount'),
-    error:       $('rvError'),
-    submit:      $('rvSubmitBtn'),
-    success:     $('reviewSuccessSheet'),
-  };
-  if (!el.list || !el.tpl || !el.rate || !el.submit) return;   // верстка не подключена
-
-  let selectedRating = 5;
-  let loadSeq = 0;
-
-  /* ---------- вспомогательное ---------- */
-  function plural(n, one, few, many){
-    const m10 = n % 10, m100 = n % 100;
-    if (m10 === 1 && m100 !== 11) return one;
-    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return few;
-    return many;
-  }
-  const reviewsWord = n => `${n} ${plural(n, 'отзыв', 'отзыва', 'отзывов')}`;
-
-  function fmtDate(iso){
-    const d = new Date(iso);
-    if (isNaN(d)) return '';
-    return d.toLocaleDateString('ru-RU', { day:'numeric', month:'long', year:'numeric' });
-  }
-
-  function haptic(kind){ try { tg?.HapticFeedback?.notificationOccurred(kind); } catch(e){} }
-
-  /* ---------- 1. ЗАГРУЗКА И ОТРИСОВКА ---------- */
-  function renderSummary(average, count){
-    const has = count > 0;
-    const avg = has ? Number(average).toFixed(1) : '';
-
-    if (el.score)     el.score.innerHTML = has ? `${avg}<small>/5</small>` : '—';
-    if (el.sumStars)  el.sumStars.style.setProperty('--rating', has ? Number(average) : 0);
-    if (el.count)     el.count.textContent = has ? reviewsWord(count) : 'Пока нет отзывов';
-
-    [el.badgeHeader, el.badgeMenu].forEach(b => {
-      if (!b) return;
-      b.textContent = avg;
-      b.style.display = has ? '' : 'none';     // '' → берём display из CSS (flex)
-    });
-  }
-
-  function renderList(reviews){
-    el.list.textContent = '';
-    const frag = document.createDocumentFragment();
-
-    reviews.forEach((r, i) => {
-      const card = el.tpl.content.firstElementChild.cloneNode(true);
-      const name = String(r.author_name || 'Аноним');
-
-      card.querySelector('.rv-avatar').textContent = (Array.from(name)[0] || '?').toUpperCase();
-      card.querySelector('.rv-author b').textContent = name;
-      card.querySelector('.rv-date').textContent = fmtDate(r.created_at);
-      card.querySelector('.rv-text').textContent = r.text || '';
-
-      const stars = card.querySelector('.rv-stars');
-      const rating = Math.max(0, Math.min(5, Number(r.rating) || 0));
-      stars.style.setProperty('--rating', rating);
-      stars.setAttribute('aria-label', `Оценка ${rating} из 5`);
-
-      card.style.animationDelay = `${Math.min(i, 8) * 40}ms`;
-      frag.appendChild(card);
-    });
-
-    el.list.appendChild(frag);
-    if (el.empty) el.empty.hidden = reviews.length > 0;
-  }
-
-  async function fetchReviews(opts){
-    const silent = !!(opts && opts.silent);
-    const seq = ++loadSeq;                        // игнорируем устаревшие ответы
-    try {
-      const res = await fetch(API_URL, { headers:{ 'Accept':'application/json' } });
-      if (!res.ok) throw new Error('Не удалось загрузить отзывы');
-      const data = await res.json();
-      if (seq !== loadSeq) return;
-
-      const reviews = Array.isArray(data.reviews) ? data.reviews : [];
-      const count   = Number.isFinite(+data.count) ? +data.count : reviews.length;
-      renderSummary(data.average, count);
-      renderList(reviews);
-    } catch(e){
-      if (!silent) showToast(e.message || 'Не удалось загрузить отзывы', 'error');
-    }
-  }
-
-  /* ---------- 2. ИНТЕРАКТИВНЫЕ ЗВЁЗДЫ ----------
-     Подсветка при наведении и «все звёзды до выбранной» делает CSS (radio + :checked / :hover).
-     Здесь — хранение значения, подпись под звёздами и сброс. */
-  function setRating(value){
-    selectedRating = value;
-    const input = $('rvStar' + value);
-    if (input) input.checked = true;
-    el.rate.classList.remove('err');
-    if (el.rateHint) el.rateHint.textContent = RATING_HINTS[value] || 'Нажмите на звезду';
-  }
-
-  el.rate.addEventListener('change', e => {
-    const v = parseInt(e.target.value, 10);
-    if (v >= 1 && v <= 5){
-      setRating(v);
-      try { tg?.HapticFeedback?.selectionChanged(); } catch(err){}
-    }
-  });
-
-  // подпись при наведении (десктоп), возврат к выбранной при уходе курсора
-  el.rate.addEventListener('mouseover', e => {
-    const lab = e.target.closest('label');
-    if (lab && el.rateHint) el.rateHint.textContent = lab.title || '';
-  });
-  el.rate.addEventListener('mouseleave', () => {
-    if (el.rateHint) el.rateHint.textContent = RATING_HINTS[selectedRating] || '';
-  });
-
-  /* ---------- счётчик символов ---------- */
-  function syncCounter(){ if (el.textCount) el.textCount.textContent = el.text.value.length; }
-  el.text.addEventListener('input', () => {
-    syncCounter();
-    el.text.classList.remove('err');
-    el.error.textContent = '';
-  });
-
-  function resetForm(){
-    el.text.value = '';
-    el.text.classList.remove('err');
-    el.error.textContent = '';
-    syncCounter();
-    setRating(5);
-  }
-
-  /* ---------- 3. ОТПРАВКА ОТЗЫВА ---------- */
-  function authorNameOf(user){
-    const full = [user.first_name, user.last_name].filter(Boolean).join(' ').trim();
-    return full || user.username || 'Покупатель';
-  }
-
-  async function submitReview(){
-    el.error.textContent = '';
-    el.text.classList.remove('err');
-
-    const user = tg?.initDataUnsafe?.user || null;   // Telegram.WebApp.initDataUnsafe.user
-    if (!user || !user.id){
-      el.error.textContent = 'Откройте магазин через Telegram, чтобы оставить отзыв';
-      haptic('error');
-      return;
-    }
-
-    const text = el.text.value.trim();
-    if (!(selectedRating >= 1 && selectedRating <= 5)){
-      el.rate.classList.add('err');
-      el.error.textContent = 'Поставьте оценку от 1 до 5';
-      haptic('error');
-      return;
-    }
-    if (!text){
-      el.text.classList.add('err');
-      el.error.textContent = 'Напишите пару слов об отзыве';
-      el.text.focus();
-      haptic('error');
-      return;
-    }
-
-    const payload = {
-      telegram_id: user.id,
-      author_name: authorNameOf(user),
-      username:    user.username || '',
-      rating:      selectedRating,
-      text:        text,
-      init_data:   tg?.initData || '',     // понадобится для серверной проверки подписи Telegram
-    };
-
-    el.submit.disabled = true;
-    el.submit.textContent = 'Отправка...';
-
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify(payload),
-      });
-      if (!res.ok){
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || 'Не удалось отправить отзыв');
-      }
-
-      resetForm();
-      openSheet('reviewSuccessSheet');          // закрывает форму и показывает «Спасибо»
-      haptic('success');
-    } catch(e){
-      el.error.textContent = e.message;
-      showToast(e.message, 'error');
-      haptic('error');
-    } finally {
-      el.submit.disabled = false;
-      el.submit.textContent = 'Отправить на проверку';
-    }
-  }
-  el.submit.addEventListener('click', submitReview);
-
-  /* ---------- открытие окон ---------- */
-  function openReviews(){
-    openSheet('reviewsSheet');
-    fetchReviews({ silent:true });     // обновляем список при каждом открытии
-  }
-
-  el.headerBtn?.addEventListener('click', openReviews);
-
-  el.menuBtn?.addEventListener('click', () => {
-    // закрываем боковое меню штатной кнопкой, затем открываем отзывы
-    if ($('sidebarMenu')?.classList.contains('active')) $('menuClose')?.click();
-    openReviews();
-  });
-
-  el.writeBtn?.addEventListener('click', () => {
-    setRating(selectedRating);
-    openSheet('reviewFormSheet');
-  });
-
-  /* ---------- тексты окна «Спасибо» ---------- */
-  if (el.success){
-    const t = el.success.querySelector('.success-title');
-    const s = el.success.querySelector('.success-sub');
-    if (t) t.textContent = 'Спасибо!';
-    if (s) s.textContent = SUCCESS_MSG;
-  }
-
-  /* ---------- старт ---------- */
-  setRating(5);
-  syncCounter();
-  fetchReviews({ silent:true });       // подтянуть рейтинг в бейджи при загрузке магазина
-
-  window.fetchReviews = fetchReviews;  // чтобы можно было вызвать из консоли/других модулей
-})();
 
 </script>
 </body>

@@ -52,40 +52,6 @@ QUESTIONS_FILE = os.path.join(APP_DIR, "questions.json")
 PROMOS_FILE = os.path.join(APP_DIR, "promos.json")
 UPLOAD_DIR = os.path.join(APP_DIR, "uploads")   # только для разового переноса старых фото в базу
 
-# Доставка и самовывоз
-try:
-    DELIVERY_FEE = int(os.environ.get("DELIVERY_FEE", "0"))
-except ValueError:
-    DELIVERY_FEE = 0
-# Бесплатная доставка от этой суммы товаров (после промокода, до списания баллов). 0 — отключить.
-try:
-    FREE_DELIVERY_FROM = int(os.environ.get("FREE_DELIVERY_FROM", "0"))
-except ValueError:
-    FREE_DELIVERY_FROM = 0
-
-
-def delivery_fee_for(goods_total):
-    """Стоимость доставки: 0 ₽ от FREE_DELIVERY_FROM, иначе DELIVERY_FEE."""
-    if FREE_DELIVERY_FROM > 0 and goods_total >= FREE_DELIVERY_FROM:
-        return 0
-    return DELIVERY_FEE
-
-
-PICKUP_POINTS = [
-    p.strip() for p in (os.environ.get("PICKUP_POINTS") or "Центр").split(",") if p.strip()
-]
-
-# Программа лояльности: 1 балл = 1 рубль
-def _env_float(name, default):
-    try:
-        return float(os.environ.get(name, default))
-    except ValueError:
-        return float(default)
-
-POINT_VALUE = _env_float("POINT_VALUE_RUB", 0.5)             # 1 балл = 0,5 ₽
-CASHBACK_PERCENT = _env_float("CASHBACK_PERCENT", 5)        # % кешбэка от суммы, оплаченной рублями
-MAX_POINTS_PERCENT = _env_float("MAX_POINTS_PERCENT", 30)   # макс. доля суммы заказа, которую можно оплатить баллами
-
 ALLOWED_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp", ".gif"}
 ALLOWED_BADGES = {"hit", "trend", "sale", "instock"}
 ALLOWED_PROMO_TYPES = {"percent", "fixed"}
@@ -109,41 +75,6 @@ engine = create_engine(
 )
 SessionLocal = scoped_session(sessionmaker(bind=engine, expire_on_commit=False))
 Base = declarative_base()
-
-
-class Review(Base):
-    __tablename__ = "reviews"
-    __table_args__ = (CheckConstraint("rating BETWEEN 1 AND 5", name="ck_reviews_rating"),)
-
-    id          = Column(Integer, primary_key=True)
-    telegram_id = Column(BigInteger, nullable=False, index=True)
-    author_name = Column(String(64), nullable=False)
-    rating      = Column(Integer, nullable=False)
-    text        = Column(Text, nullable=False)
-    is_approved = Column(Boolean, nullable=False, default=False, index=True)
-    created_at  = Column(DateTime(timezone=True), nullable=False,
-                         default=lambda: datetime.now(timezone.utc), index=True)
-
-    def to_public(self):
-        """Публичный вид: telegram_id наружу не отдаём."""
-        created = self.created_at
-        if created is not None and created.tzinfo is None:     # SQLite отдаёт без tz
-            created = created.replace(tzinfo=timezone.utc)
-        return {
-            "id": self.id,
-            "author_name": self.author_name,
-            "rating": self.rating,
-            "text": self.text,
-            "created_at": created.isoformat() if created else None,
-        }
-
-    def to_admin(self):
-        """Вид для админ-панели: с ID автора и статусом модерации."""
-        d = self.to_public()
-        d["telegram_id"] = self.telegram_id
-        d["is_approved"] = bool(self.is_approved)
-        return d
-
 
 # ---------------------------------------------------------------------
 #  ВСЕ ДАННЫЕ МАГАЗИНА — В БАЗЕ (Neon): товары, заказы, вопросы, промокоды, фото
@@ -191,30 +122,6 @@ class Meta(Base):
     value = Column(Text)
 
 
-class LoyaltyUser(Base):
-    """Баланс баллов покупателя. 1 балл = 1 рубль."""
-    __tablename__ = "loyalty_users"
-    id             = Column(Integer, primary_key=True)
-    telegram_id    = Column(BigInteger, nullable=False, unique=True, index=True)
-    points_balance = Column(Integer, nullable=False, default=0)
-    total_spent    = Column(Float, nullable=False, default=0)
-    created_at     = Column(DateTime(timezone=True), nullable=False,
-                            default=lambda: datetime.now(timezone.utc))
-
-
-class LoyaltyLog(Base):
-    """Журнал движения баллов: заказы (авто) и ручные корректировки из админки."""
-    __tablename__ = "loyalty_log"
-    id            = Column(Integer, primary_key=True)
-    telegram_id   = Column(BigInteger, nullable=False, index=True)
-    delta         = Column(Integer, nullable=False)           # + начислено / − списано
-    balance_after = Column(Integer, nullable=False)
-    kind          = Column(String(16), nullable=False, default="order")   # order | admin
-    note          = Column(String(255))
-    created_at    = Column(DateTime(timezone=True), nullable=False,
-                           default=lambda: datetime.now(timezone.utc))
-
-
 # Отдельная фабрика сессий для данных магазина (не мешает сессиям отзывов).
 DocSession = sessionmaker(bind=engine, expire_on_commit=False)
 
@@ -222,103 +129,6 @@ try:
     Base.metadata.create_all(engine)       # создаст все таблицы, если их ещё нет
 except Exception:
     log.exception("Не удалось подключиться к базе — проверьте DATABASE_URL")
-
-
-def _get_or_create_loyalty(db, tg_id, lock=False):
-    q = db.query(LoyaltyUser).filter(LoyaltyUser.telegram_id == tg_id)
-    if lock:
-        q = q.with_for_update()          # блокировка строки в PostgreSQL (в SQLite игнорируется)
-    user = q.first()
-    if user is None:
-        user = LoyaltyUser(telegram_id=tg_id, points_balance=0, total_spent=0)
-        db.add(user)
-        try:
-            db.flush()
-        except IntegrityError:           # параллельный запрос успел создать запись
-            db.rollback()
-            user = q.first()
-    return user
-
-
-def loyalty_get(tg_id):
-    """Баланс покупателя; если записи нет — создаёт с нулевым балансом."""
-    with DocSession() as db:
-        try:
-            user = _get_or_create_loyalty(db, tg_id)
-            db.commit()
-            return {"telegram_id": user.telegram_id, "points_balance": user.points_balance}
-        except Exception:
-            db.rollback()
-            raise
-
-
-def _log_loyalty(db, tg_id, delta, balance_after, kind, note):
-    if delta:
-        db.add(LoyaltyLog(telegram_id=tg_id, delta=int(delta), balance_after=int(balance_after),
-                          kind=kind, note=(note or "")[:255]))
-
-
-def loyalty_apply(tg_id, spend, earn, paid, note=""):
-    """Списывает spend баллов, начисляет earn баллов, добавляет paid к total_spent — одной транзакцией.
-    Бросает ValueError, если на балансе не хватает баллов. Возвращает новый баланс."""
-    with DocSession() as db:
-        try:
-            user = _get_or_create_loyalty(db, tg_id, lock=True)
-            if spend > user.points_balance:
-                raise ValueError("not enough points")
-            after_spend = user.points_balance - spend
-            user.points_balance = after_spend + earn
-            user.total_spent = float(user.total_spent or 0) + paid
-            _log_loyalty(db, tg_id, -spend, after_spend, "order", note)
-            _log_loyalty(db, tg_id, earn, user.points_balance, "order", note)
-            db.commit()
-            return user.points_balance
-        except Exception:
-            db.rollback()
-            raise
-
-
-def loyalty_revert(tg_id, spend, earn, paid, note=""):
-    """Обратная операция при отмене заказа: возвращает списанные баллы, забирает начисленный кешбэк."""
-    with DocSession() as db:
-        try:
-            user = _get_or_create_loyalty(db, tg_id, lock=True)
-            old = user.points_balance
-            user.points_balance = max(0, old + spend - earn)
-            user.total_spent = max(0.0, float(user.total_spent or 0) - paid)
-            _log_loyalty(db, tg_id, user.points_balance - old, user.points_balance, "order", note)
-            db.commit()
-            return user.points_balance
-        except Exception:
-            db.rollback()
-            raise
-
-
-MAX_ADMIN_POINTS = 1_000_000
-
-
-def loyalty_admin_adjust(tg_id, action, amount, note):
-    """Ручная корректировка баланса из админки. action: add | subtract | set | reset.
-    Баланс не уходит ниже нуля. Возвращает (старый_баланс, новый_баланс)."""
-    with DocSession() as db:
-        try:
-            user = _get_or_create_loyalty(db, tg_id, lock=True)
-            old = user.points_balance
-            if action == "add":
-                new = old + amount
-            elif action == "subtract":
-                new = max(0, old - amount)
-            elif action == "set":
-                new = amount
-            else:  # reset
-                new = 0
-            user.points_balance = new
-            _log_loyalty(db, tg_id, new - old, new, "admin", note)
-            db.commit()
-            return old, new
-        except Exception:
-            db.rollback()
-            raise
 
 
 def _load_docs(model):
@@ -431,215 +241,6 @@ def seed_from_files_once():
 @app.teardown_appcontext
 def _close_db_session(exc=None):
     SessionLocal.remove()
-
-
-REVIEW_MAX_TEXT = 2000
-REVIEW_MAX_NAME = 64
-REVIEW_MAX_PENDING = 3      # максимум неодобренных отзывов от одного пользователя
-
-
-def review_keyboard(review_id):
-    kb = types.InlineKeyboardMarkup()
-    kb.row(
-        types.InlineKeyboardButton("✅ Одобрить", callback_data=f"rv:ok:{review_id}"),
-        types.InlineKeyboardButton("❌ Отклонить", callback_data=f"rv:no:{review_id}"),
-    )
-    return kb
-
-
-def notify_admins_new_review(review_id, author_name, username, telegram_id, rating, text):
-    who = f"{author_name} (@{username})" if username else f"{author_name} (ID {telegram_id})"
-    shown = text if len(text) <= 3000 else text[:3000] + "…"
-    admin_text = (
-        "💬 Новый отзыв на модерацию!\n"
-        f"Автор: {who}\n"
-        f"Оценка: {'⭐' * rating} ({rating}/5)\n"
-        f"Текст: \"{shown}\""
-    )
-    kb = review_keyboard(review_id)
-    for admin_id in ADMIN_CHAT_IDS:
-        try:
-            bot.send_message(admin_id, admin_text, reply_markup=kb)
-        except Exception as e:
-            log.warning("Не удалось уведомить администратора %s: %s", admin_id, e)
-
-
-# --- API отзывов ------------------------------------------------------
-
-@app.route("/api/reviews", methods=["GET"])
-def get_reviews():
-    db = SessionLocal()
-    try:
-        items = (
-            db.query(Review)
-            .filter(Review.is_approved.is_(True))
-            .order_by(Review.created_at.desc(), Review.id.desc())
-            .all()
-        )
-        count = len(items)
-        average = round(sum(r.rating for r in items) / count, 1) if count else 0
-        return jsonify({
-            "reviews": [r.to_public() for r in items],
-            "average": average,       # напр. 4.8 (из 5)
-            "count": count,
-        })
-    except Exception:
-        log.exception("Не удалось загрузить отзывы")
-        return jsonify({"error": "Не удалось загрузить отзывы"}), 500
-
-
-@app.route("/api/reviews", methods=["POST"])
-def create_review():
-    data = request.get_json(force=True, silent=True) or {}
-
-    try:
-        telegram_id = int(data.get("telegram_id"))
-        if telegram_id <= 0:
-            raise ValueError
-    except (TypeError, ValueError):
-        abort(400, description="Не удалось определить Telegram-аккаунт")
-
-    author_name = " ".join(str(data.get("author_name") or "").split())[:REVIEW_MAX_NAME]
-    text = str(data.get("text") or "").strip()
-    username = re.sub(r"[^A-Za-z0-9_]", "", str(data.get("username") or "").lstrip("@"))[:64]
-    if not author_name:
-        abort(400, description="Не указано имя автора")
-    if not text:
-        abort(400, description="Напишите текст отзыва")
-    if len(text) > REVIEW_MAX_TEXT:
-        abort(400, description=f"Отзыв слишком длинный (максимум {REVIEW_MAX_TEXT} символов)")
-
-    raw_rating = data.get("rating")
-    try:
-        if isinstance(raw_rating, bool):
-            raise ValueError
-        rating = int(raw_rating)
-    except (TypeError, ValueError):
-        abort(400, description="Поставьте оценку от 1 до 5")
-    if not 1 <= rating <= 5:
-        abort(400, description="Оценка должна быть от 1 до 5")
-
-    db = SessionLocal()
-    try:
-        pending = (
-            db.query(func.count(Review.id))
-            .filter(Review.telegram_id == telegram_id, Review.is_approved.is_(False))
-            .scalar()
-        )
-        if pending >= REVIEW_MAX_PENDING:
-            return jsonify({"error": "Ваши прошлые отзывы ещё на модерации — подождите немного"}), 429
-
-        review = Review(
-            telegram_id=telegram_id,
-            author_name=author_name,
-            rating=rating,
-            text=text,
-            is_approved=False,          # виден только после одобрения админом
-        )
-        db.add(review)
-        db.commit()
-        review_id = review.id
-    except Exception:
-        db.rollback()
-        log.exception("Не удалось сохранить отзыв")
-        return jsonify({"error": "Не удалось сохранить отзыв"}), 500
-
-    notify_admins_new_review(review_id, author_name, username, telegram_id, rating, text)
-    return jsonify({"ok": True, "review_id": review_id, "status": "pending"}), 201
-
-
-# --- Админ-панель: все отзывы и удаление --------------------------------
-
-@app.route("/api/admin/reviews", methods=["GET"])
-def admin_get_reviews():
-    require_admin()
-    db = SessionLocal()
-    try:
-        items = db.query(Review).order_by(Review.created_at.desc(), Review.id.desc()).all()
-        return jsonify([r.to_admin() for r in items])
-    except Exception:
-        log.exception("Не удалось загрузить отзывы для админ-панели")
-        return jsonify({"error": "Не удалось загрузить отзывы"}), 500
-
-
-@app.route("/api/admin/reviews/<int:rid>", methods=["DELETE"])
-def admin_delete_review(rid):
-    require_admin()
-    db = SessionLocal()
-    try:
-        review = db.get(Review, rid)
-        if review is None:
-            abort(404, description="Отзыв не найден")
-        db.delete(review)
-        db.commit()
-    except Exception as e:
-        db.rollback()
-        if getattr(e, "code", None) == 404:
-            raise
-        log.exception("Не удалось удалить отзыв %s", rid)
-        return jsonify({"error": "Не удалось удалить отзыв"}), 500
-    return "", 204
-
-
-# --- Модерация кнопками в Telegram -------------------------------------
-
-REVIEW_APPROVED_TEXT = "✅ Отзыв одобрен и опубликован в магазине"
-REVIEW_REJECTED_TEXT = "❌ Отзыв отклонен"
-REVIEW_DONE_TEXT = "ℹ️ Этот отзыв уже обработан"
-
-
-def _finish_moderation_message(call, new_text):
-    """Заменяем текст сообщения админа (кнопки при этом исчезают)."""
-    try:
-        bot.edit_message_text(new_text, call.message.chat.id, call.message.message_id)
-    except Exception as e:
-        log.warning("Не удалось обновить сообщение модерации: %s", e)
-
-
-@bot.callback_query_handler(func=lambda c: bool(c.data) and c.data.startswith("rv:"))
-def on_review_moderation(call: types.CallbackQuery):
-    # кнопки доступны только администраторам
-    if not call.from_user or call.from_user.id not in ADMIN_CHAT_IDS:
-        bot.answer_callback_query(call.id, "Нет доступа", show_alert=True)
-        return
-
-    try:
-        _, action, raw_id = call.data.split(":")
-        review_id = int(raw_id)
-        if action not in ("ok", "no"):
-            raise ValueError
-    except ValueError:
-        bot.answer_callback_query(call.id, "Некорректные данные кнопки", show_alert=True)
-        return
-
-    db = SessionLocal()
-    try:
-        review = db.get(Review, review_id)
-
-        # удалён или уже одобрен другим админом
-        if review is None or review.is_approved:
-            bot.answer_callback_query(call.id, "Этот отзыв уже обработан")
-            _finish_moderation_message(call, REVIEW_DONE_TEXT)
-            return
-
-        if action == "ok":
-            review.is_approved = True
-            db.commit()
-            result_text = REVIEW_APPROVED_TEXT
-        else:
-            db.delete(review)
-            db.commit()
-            result_text = REVIEW_REJECTED_TEXT
-    except Exception:
-        db.rollback()
-        log.exception("Ошибка модерации отзыва %s", review_id)
-        bot.answer_callback_query(call.id, "Ошибка базы данных, попробуйте ещё раз", show_alert=True)
-        return
-    finally:
-        SessionLocal.remove()
-
-    bot.answer_callback_query(call.id, "Готово")
-    _finish_moderation_message(call, result_text)
 
 
 # --- Вспомогательные функции для товаров и авторизации админа -----------
@@ -901,61 +502,22 @@ CANCEL_STATUSES = {"rejected", "cancelled"}
 ALL_STATUSES = PENDING_STATUSES | ACCEPTED_STATUSES | CANCEL_STATUSES
 
 
-def _cb_credited(o):
-    """Начислен ли кешбэк. У старых заказов флага нет: там кешбэк начислялся сразу вместе со списанием баллов."""
-    return bool(o.get("cashback_credited", o.get("loyalty_applied")))
-
-
 def apply_order_status(o, target):
-    """Переводит заказ в статус target и приводит склад и баллы в соответствие.
+    """Переводит заказ в статус target и приводит склад в соответствие.
     Возвращает текст ошибки (заказ при этом не меняется) либо None. Вызывать под DATA_LOCK;
     после успеха вызывающий сохраняет список заказов."""
-    tg = o.get("customer_chat_id")
     items = o.get("items") or []
-    spend = int(o.get("points_spent") or 0)
-    cb = int(o.get("cashback") or 0)
-    total = o.get("total") or 0
-
-    have_cb = _cb_credited(o)
-    o["cashback_credited"] = have_cb                       # зафиксировать для старых заказов
-    have_spend = bool(o.get("loyalty_applied"))
     have_stock = bool(o.get("stock_deducted"))
-
-    want_spend = target not in CANCEL_STATUSES
     want_hold = target in ACCEPTED_STATUSES
 
-    # 1) сначала то, что может не получиться
-    spend_acquired = False
-    if want_spend and not have_spend and tg:
-        try:
-            loyalty_apply(tg, spend, 0, 0, f"Оплата баллами, заказ DS-{o.get('id')}")
-        except ValueError:
-            return "У клиента не хватает баллов, чтобы возобновить заказ"
-        spend_acquired = True
-        o["loyalty_applied"] = True
     if want_hold and not have_stock:
         err = reserve_stock(items)
         if err:
-            if spend_acquired:
-                loyalty_revert(tg, spend, 0, 0, f"Возврат баллов, заказ DS-{o.get('id')}")
-                o["loyalty_applied"] = False
             return err
         o["stock_deducted"] = True
-
-    # 2) затем освобождение
-    if not want_hold and have_stock:
+    elif not want_hold and have_stock:
         shift_stock(items, +1)
         o["stock_deducted"] = False
-    if tg:
-        if want_hold and not have_cb:
-            loyalty_apply(tg, 0, cb, total, f"Кешбэк за заказ DS-{o.get('id')}")
-            o["cashback_credited"] = True
-        elif not want_hold and have_cb:
-            loyalty_revert(tg, 0, cb, total, f"Отмена кешбэка, заказ DS-{o.get('id')}")
-            o["cashback_credited"] = False
-        if not want_spend and o.get("loyalty_applied"):
-            loyalty_revert(tg, spend, 0, 0, f"Возврат баллов, заказ DS-{o.get('id')}")
-            o["loyalty_applied"] = False
     o["status"] = target
     return None
 
@@ -1026,14 +588,10 @@ def on_order_moderation(call: types.CallbackQuery):
     if chat_id:
         try:
             if accepted:
-                cb = int(order.get("cashback") or 0)
-                bot.send_message(chat_id, f"✅ Ваш заказ DS-{oid} принят!\n\nМы свяжемся с вами в этом чате."
-                                 + (f"\nНачислен кешбэк: {cb} б." if cb else ""))
+                bot.send_message(chat_id, f"✅ Ваш заказ DS-{oid} принят!\n\nМенеджер свяжется с вами.")
             else:
-                sp = int(order.get("points_spent") or 0)
                 bot.send_message(chat_id, f"❌ К сожалению, заказ DS-{oid} отклонён."
-                                 + (f"\nСписанные баллы ({sp} б.) возвращены." if sp else "")
-                                 + "\nЕсли остались вопросы — напишите менеджеру.")
+                                 "\nЕсли остались вопросы — напишите менеджеру.")
         except Exception as e:
             log.warning("Не удалось уведомить покупателя о статусе заказа: %s", e)
 
@@ -1079,8 +637,6 @@ def cmd_start(message: types.Message):
         "🖤 *DARK STREET VAPE STORE*\n\n"
         "*Жидкости, расходники, снюс.*\n"
         "У нас дешевле и качественней!\n\n"
-        "📍 Район: Центр\n"
-        "🚚 Доставка в другие районы обсуждается с менеджером\n\n"
         "Нажмите кнопку ниже, чтобы открыть каталог и оформить заказ.",
         reply_markup=keyboard,
         parse_mode="Markdown",
@@ -1102,56 +658,7 @@ def index():
 
 @app.route("/api/config", methods=["GET"])
 def public_config():
-    return jsonify({"contact": SHOP_CONTACT, "delivery_fee": DELIVERY_FEE,
-                    "free_delivery_from": FREE_DELIVERY_FROM, "pickup_points": PICKUP_POINTS,
-                    "cashback_percent": CASHBACK_PERCENT, "max_points_percent": MAX_POINTS_PERCENT,
-                    "point_value": POINT_VALUE})
-
-
-@app.route("/api/loyalty/balance", methods=["GET"])
-def loyalty_balance():
-    """Баланс баллов покупателя. Нет записи — создаём с балансом 0."""
-    try:
-        tg_id = int(request.args.get("telegram_id", ""))
-        if tg_id <= 0:
-            raise ValueError
-    except (TypeError, ValueError):
-        abort(400, description="Некорректный telegram_id")
-    try:
-        return jsonify(loyalty_get(tg_id))
-    except Exception:
-        log.exception("Не удалось получить баланс баллов")
-        return jsonify({"error": "Не удалось получить баланс"}), 500
-
-
-def parse_points(raw):
-    """points_to_spend → целое число >= 0 (баллы списываются только целыми)."""
-    if raw in (None, ""):
-        return 0
-    if isinstance(raw, bool):
-        abort(400, description="Некорректное количество баллов")
-    try:
-        v = float(raw)
-        if v < 0 or v != int(v):
-            raise ValueError
-    except (TypeError, ValueError, OverflowError):
-        abort(400, description="Укажите количество баллов целым числом")
-    return int(v)
-
-
-def max_points_for(goods_total):
-    """Максимум баллов к списанию: скидка в рублях (points * POINT_VALUE) не больше MAX_POINTS_PERCENT от суммы заказа."""
-    return max(0, int(goods_total * MAX_POINTS_PERCENT / 100 / POINT_VALUE + 1e-9))
-
-
-def cashback_points(paid_rub):
-    """Кешбэк в баллах: round((сумма_рублями * 5%) / 0,5), округление «half up»."""
-    return int(math.floor(paid_rub * CASHBACK_PERCENT / 100 / POINT_VALUE + 0.5 + 1e-9))
-
-
-def order_loyalty_args(o):
-    return (o.get("customer_chat_id"), int(o.get("points_spent") or 0),
-            int(o.get("cashback") or 0), o.get("total") or 0)
+    return jsonify({"contact": SHOP_CONTACT})
 
 
 @app.route("/products.json", methods=["GET"])
@@ -1162,72 +669,20 @@ def products():
     return resp
 
 
-def parse_delivery(raw):
-    """Проверяет блок доставки из заказа и возвращает (delivery, error)."""
-    raw = raw if isinstance(raw, dict) else {}
-    mode = raw.get("mode")
-    if mode not in ("pickup", "delivery"):
-        return None, "Выберите самовывоз или доставку"
-
-    d = {"mode": mode, "point": None, "address": None, "asap": True, "date": None, "time": None, "fee": 0}
-    if mode == "pickup":
-        point = (raw.get("point") or "").strip()
-        if point not in PICKUP_POINTS:
-            return None, "Выберите пункт самовывоза"
-        d["point"] = point
-    else:
-        address = (raw.get("address") or "").strip()
-        if len(address) < 5:
-            return None, "Укажите адрес доставки"
-        d["address"] = address[:300]
-        d["fee"] = DELIVERY_FEE
-
-    if not raw.get("asap", True):
-        date_s = (raw.get("date") or "").strip()
-        time_s = (raw.get("time") or "").strip()
-        try:
-            datetime.strptime(date_s, "%Y-%m-%d")
-            datetime.strptime(time_s, "%H:%M")
-        except ValueError:
-            return None, "Укажите дату и время"
-        d["asap"] = False
-        d["date"] = date_s
-        d["time"] = time_s
-    return d, None
-
-
-def delivery_text(d):
-    if not isinstance(d, dict) or not d:
-        return ""
-    if d.get("mode") == "delivery":
-        fee_txt = fmt_price(d["fee"]) if d.get("fee") else "бесплатно"
-        line = f"🚚 Доставка ({fee_txt}): {d.get('address') or '—'}"
-    else:
-        line = f"📍 Самовывоз: {d.get('point') or '—'}"
-    if d.get("asap", True):
-        when = "⚡ Как можно скорее"
-    else:
-        try:
-            day = datetime.strptime(d.get("date", ""), "%Y-%m-%d").strftime("%d.%m")
-        except ValueError:
-            day = d.get("date") or ""
-        when = f"🕒 {day} в {d.get('time') or ''}"
-    return line + "\n" + when
+USERNAME_RE = re.compile(r"^[A-Za-z0-9_]{4,32}$")
 
 
 @app.route("/api/order", methods=["POST"])
 @app.route("/api/orders", methods=["POST"])
 @locked
 def create_order():
+    """Заказ без имени/телефона/доставки: клиент пишет менеджеру сам (contact_mode=self)
+    или оставляет Telegram-юзернейм, чтобы менеджер написал первым (contact_mode=username)."""
     data = request.get_json(force=True, silent=True) or {}
 
-    name = (data.get("name") or "").strip()
-    phone = (data.get("phone") or "").strip()
-    comment = (data.get("comment") or "").strip()
     items = data.get("items") or []
+    contact_mode = "username" if data.get("contact_mode") == "username" else "self"
 
-    if not name or not phone:
-        abort(400, description="Укажите имя и телефон")
     if not isinstance(items, list) or not items:
         abort(400, description="Корзина пуста")
     for it in items:
@@ -1237,10 +692,6 @@ def create_order():
         except (TypeError, ValueError):
             abort(400, description="Некорректное количество товара")
 
-    delivery, delivery_err = parse_delivery(data.get("delivery"))
-    if delivery_err:
-        abort(400, description=delivery_err)
-
     subtotal = sum(int(i.get("price") or 0) * int(i.get("qty") or 1) for i in items)
 
     tg_user = data.get("tg_user") or {}
@@ -1248,7 +699,11 @@ def create_order():
         customer_chat_id = int(tg_user.get("id")) if tg_user.get("id") else None
     except (TypeError, ValueError):
         customer_chat_id = None
-    customer_username = (tg_user.get("username") or "").strip() or None
+
+    given = str(data.get("username") or "").strip().lstrip("@")
+    if contact_mode == "username" and not USERNAME_RE.match(given):
+        abort(400, description="Укажите юзернейм Telegram, например @username")
+    customer_username = (given if USERNAME_RE.match(given) else "") or (tg_user.get("username") or "").strip() or None
 
     promo_code_raw = (data.get("promo_code") or "").strip()
     promo = None
@@ -1260,70 +715,28 @@ def create_order():
             abort(400, description=promo_err)
         discount = compute_promo_discount(promo, subtotal)
 
-    # --- баллы: проверяем до любых списаний ---
-    goods_total = subtotal - discount                       # сумма корзины с учётом промокода
-    if delivery["mode"] == "delivery":
-        delivery["fee"] = delivery_fee_for(goods_total)     # бесплатно от FREE_DELIVERY_FROM
-    points_to_spend = parse_points(data.get("points_to_spend"))
-    if points_to_spend:
-        if not customer_chat_id:
-            abort(400, description="Оплата баллами доступна только при заказе из Telegram")
-        try:
-            balance = loyalty_get(customer_chat_id)["points_balance"]
-        except Exception:
-            log.exception("Не удалось прочитать баланс баллов")
-            return jsonify({"error": "Не удалось проверить баланс баллов"}), 500
-        if points_to_spend > balance:
-            abort(400, description=f"Недостаточно баллов: на балансе {balance}")
-        max_points = max_points_for(goods_total)
-        if points_to_spend > max_points:
-            abort(400, description=f"Баллами можно оплатить не больше {MAX_POINTS_PERCENT:g}% суммы заказа "
-                                   f"(до {max_points} баллов)")
-
-    points_discount = round(points_to_spend * POINT_VALUE, 2)      # скидка в рублях = баллы * 0,5
-    total = round(goods_total - points_discount + delivery["fee"], 2)   # к оплате рублями
-    cashback = cashback_points(total) if customer_chat_id else 0       # баллы за оплаченные рубли
+    total = round(subtotal - discount, 2)
 
     # остатки только проверяем: списание — после того, как админ нажмёт «Принять»
     stock_err = check_stock(items)
     if stock_err:
         abort(400, description=stock_err)
 
-    new_balance = None
-    if customer_chat_id:
-        try:
-            # баллы к оплате резервируем сразу, кешбэк начислится при принятии заказа
-            new_balance = loyalty_apply(customer_chat_id, points_to_spend, 0, 0, "Оплата баллами нового заказа")
-        except ValueError:
-            abort(400, description="Недостаточно баллов на балансе")
-        except Exception:
-            log.exception("Не удалось обновить баланс баллов")
-            return jsonify({"error": "Не удалось списать баллы, попробуйте ещё раз"}), 500
-
     orders = load_orders()
     new_id = (max([o.get("id", 0) for o in orders], default=0) + 1)
     order = {
         "id": new_id,
         "created_at": datetime.now(timezone.utc).isoformat(),
-        "name": name,
-        "phone": phone,
-        "comment": comment,
+        "contact_mode": contact_mode,
         "items": items,
         "subtotal": subtotal,
         "discount": discount,
         "promo_code": promo.get("code") if promo else None,
-        "delivery": delivery,
         "total": total,
         "customer_chat_id": customer_chat_id,
         "customer_username": customer_username,
         "status": "new",
         "stock_deducted": False,
-        "cashback_credited": False,
-        "goods_total": goods_total,
-        "points_spent": points_to_spend,
-        "points_discount": points_discount,
-        "cashback": cashback,
-        "loyalty_applied": bool(customer_chat_id),
         "messages": [],
     }
     orders.append(order)
@@ -1354,14 +767,6 @@ def create_order():
         for i in items
     )
 
-    delivery_block = delivery_text(delivery)
-    if delivery["mode"] == "delivery":
-        fee_line = f"Доставка: {fmt_price(delivery['fee']) if delivery['fee'] else 'бесплатно'}\n"
-    else:
-        fee_line = ""
-    loyalty_line = (f"Оплачено баллами: {points_to_spend} б. ({fmt_price(points_discount)}) | "
-                    f"Кешбэк после подтверждения: {cashback} б. ({fmt_price(cashback * POINT_VALUE)})\n")
-
     discount_line = ""
     if discount > 0:
         discount_line = (
@@ -1376,29 +781,27 @@ def create_order():
                 "✅ Заказ оформлен!\n\n"
                 f"Номер заказа: DS-{new_id}\n"
                 f"{items_lines}\n\n"
-                f"{delivery_block}\n\n"
                 f"{discount_line}"
-                f"{fee_line}"
-                f"{loyalty_line}"
                 f"Итого: {fmt_price(total)}\n\n"
                 "Заказ в обработке. Как только менеджер его примет, мы сообщим вам в этом чате."
             )
         except Exception as e:
             log.warning("Не удалось отправить подтверждение покупателю: %s", e)
 
+    if contact_mode == "username":
+        contact_line = f"✍️ Менеджер должен написать клиенту первым: @{customer_username}\n"
+    elif customer_username:
+        contact_line = f"💬 Клиент пишет менеджеру сам: @{customer_username}\n"
+    else:
+        contact_line = "💬 Клиент пишет менеджеру сам (юзернейм не указан)\n"
+
     admin_text = (
         f"🛒 Новый заказ DS-{new_id}\n\n"
-        f"Клиент: {name}\n"
-        f"Телефон: {phone}\n"
-        + (f"Telegram: @{customer_username}\n" if customer_username else "")
-        + f"\n{admin_items_lines}\n\n"
-        f"{delivery_block}\n\n"
+        f"{contact_line}"
+        f"\n{admin_items_lines}\n\n"
         f"{discount_line}"
-        f"{fee_line}"
-        f"{loyalty_line}"
         f"Итого: {fmt_price(total)}\n"
-        + (f"\nКомментарий: {comment}\n" if comment else "")
-        + "\nТовар спишется со склада после нажатия «Принять»."
+        "\nТовар спишется со склада после нажатия «Принять»."
     )
     kb = order_keyboard(new_id)
     for admin_id in ADMIN_CHAT_IDS:
@@ -1407,8 +810,7 @@ def create_order():
         except Exception as e:
             log.warning("Не удалось уведомить администратора %s: %s", admin_id, e)
 
-    return jsonify({"ok": True, "order_id": new_id, "total": total, "points_spent": points_to_spend,
-                    "points_discount": points_discount, "cashback": cashback, "points_balance": new_balance}), 201
+    return jsonify({"ok": True, "order_id": new_id, "total": total}), 201
 
 
 @app.route("/api/promo/check", methods=["POST"])
@@ -1476,7 +878,7 @@ def customer_cancel_order(oid):
     if order.get("status") != "new":
         abort(400, description="Заказ уже обработан — отмена недоступна")
 
-    err = apply_order_status(order, "cancelled")   # вернёт баллы, товар на склад (если был списан)
+    err = apply_order_status(order, "cancelled")   # вернёт товар на склад (если был списан)
     if err:
         abort(400, description=err)
     save_orders(orders)
@@ -1882,111 +1284,6 @@ def admin_message_customer(oid):
         order["status"] = "contacted"
     save_orders(orders)
     return jsonify(order)
-
-
-# --- Управление баллами покупателей (админка) -----------------------------
-
-def _loyalty_customers():
-    """Покупатели с балансом + данные из их заказов (имя, @username, резерв баллов)."""
-    with DocSession() as db:
-        rows = [(u.telegram_id, int(u.points_balance or 0), float(u.total_spent or 0), u.created_at)
-                for u in db.query(LoyaltyUser).all()]
-    info = {}
-    for o in sorted(load_orders(), key=lambda x: x.get("id", 0)):
-        tg = o.get("customer_chat_id")
-        if not tg:
-            continue
-        d = info.setdefault(tg, {"orders": 0, "reserved": 0, "name": "", "username": "", "phone": "", "last_order": None})
-        d["orders"] += 1
-        d["name"] = o.get("name") or d["name"]
-        d["username"] = o.get("customer_username") or d["username"]
-        d["phone"] = o.get("phone") or d["phone"]
-        d["last_order"] = o.get("created_at") or d["last_order"]
-        if o.get("status") in PENDING_STATUSES and o.get("loyalty_applied"):
-            d["reserved"] += int(o.get("points_spent") or 0)
-    out = []
-    for tg, bal, spent, created in rows:
-        d = info.get(tg, {})
-        if not bal and not d:        # открыл магазин, но баллов и заказов нет — не показываем
-            continue
-        out.append({
-            "telegram_id": tg, "points_balance": bal, "total_spent": round(spent, 2),
-            "name": d.get("name", ""), "username": d.get("username", ""), "phone": d.get("phone", ""),
-            "orders": d.get("orders", 0), "reserved": d.get("reserved", 0),
-            "last_order": d.get("last_order"),
-        })
-    out.sort(key=lambda c: (-c["points_balance"], -c["orders"]))
-    return out
-
-
-@app.route("/api/admin/loyalty", methods=["GET"])
-def admin_get_loyalty():
-    require_admin()
-    customers = _loyalty_customers()
-    return jsonify({
-        "customers": customers,
-        "point_value": POINT_VALUE,
-        "total_points": sum(c["points_balance"] for c in customers),
-        "with_points": sum(1 for c in customers if c["points_balance"] > 0),
-    })
-
-
-@app.route("/api/admin/loyalty/<int:tg_id>/history", methods=["GET"])
-def admin_loyalty_history(tg_id):
-    require_admin()
-    with DocSession() as db:
-        rows = (db.query(LoyaltyLog).filter(LoyaltyLog.telegram_id == tg_id)
-                .order_by(LoyaltyLog.id.desc()).limit(60).all())
-        return jsonify([{
-            "id": r.id, "delta": r.delta, "balance_after": r.balance_after, "kind": r.kind,
-            "note": r.note or "", "at": r.created_at.isoformat() if r.created_at else None,
-        } for r in rows])
-
-
-@app.route("/api/admin/loyalty/<int:tg_id>/adjust", methods=["POST"])
-def admin_loyalty_adjust(tg_id):
-    """Начислить / списать / установить / обнулить баллы покупателя."""
-    require_admin()
-    data = request.get_json(force=True, silent=True) or {}
-    action = (data.get("action") or "").strip()
-    if action not in ("add", "subtract", "set", "reset"):
-        abort(400, description="Некорректное действие")
-    note = (data.get("note") or "").strip()[:200]
-
-    amount = 0
-    if action != "reset":
-        try:
-            amount = int(float(data.get("amount")))
-        except (TypeError, ValueError):
-            abort(400, description="Укажите количество баллов целым числом")
-        if amount < 0 or (amount == 0 and action != "set"):
-            abort(400, description="Количество баллов должно быть больше нуля")
-        if amount > MAX_ADMIN_POINTS:
-            abort(400, description="Слишком большое значение")
-
-    try:
-        old, new = loyalty_admin_adjust(tg_id, action, amount, note or "Корректировка администратором")
-    except Exception:
-        log.exception("Не удалось изменить баланс баллов")
-        return jsonify({"error": "Не удалось изменить баланс, попробуйте ещё раз"}), 500
-
-    delta = new - old
-    notified = False
-    if delta and data.get("notify"):
-        if delta > 0:
-            text = f"🎁 Вам начислено {delta} б. Баланс: {new} б."
-        else:
-            text = f"ℹ️ С вашего баланса списано {-delta} б. Баланс: {new} б."
-        if note:
-            text += f"\nПричина: {note}"
-        try:
-            bot.send_message(tg_id, text)
-            notified = True
-        except Exception as e:
-            log.warning("Не удалось уведомить покупателя %s: %s", tg_id, e)
-
-    return jsonify({"ok": True, "telegram_id": tg_id, "old_balance": old, "points_balance": new,
-                    "delta": delta, "notified": notified})
 
 
 @app.route("/api/admin/questions", methods=["GET"])

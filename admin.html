@@ -367,72 +367,6 @@
   .stock-state.last{color:var(--accent-2);} .stock-state.last i{background:var(--accent-2);box-shadow:0 0 8px rgba(212,215,220,.6);}
   .stock-state.out{color:var(--danger);} .stock-state.out i{background:var(--danger);}
 
-  /* ---- Баллы покупателей ---- */
-  .loy-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
-  .loy-stat{border:1.5px solid var(--line);background:linear-gradient(160deg,#18181B,#0E0E10);border-radius:14px;padding:12px 12px 11px;position:relative;overflow:hidden;}
-  .loy-stat::after{content:"";position:absolute;right:-18px;top:-18px;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(212,215,220,.28),transparent 70%);}
-  .loy-stat b{display:block;font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--gold);line-height:1.1;letter-spacing:.02em;position:relative;}
-  .loy-stat span{display:block;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-top:5px;position:relative;}
-  .loy-search{position:relative;margin-bottom:14px;}
-  .loy-search input{padding-left:40px;border-radius:12px;}
-  .loy-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:18px;height:18px;stroke:var(--muted-dim);fill:none;stroke-width:2;stroke-linecap:round;pointer-events:none;}
-  .loy-card{background:var(--bg-elev);border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden;animation:cardIn .4s var(--ease) both;transition:border-color .25s var(--ease),transform .25s var(--ease);}
-  .loy-card:hover{border-color:rgba(212,215,220,.35);transform:translateY(-2px);}
-  .loy-top{display:flex;align-items:center;gap:12px;}
-  .loy-ava{flex:0 0 auto;width:46px;height:46px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:20px;font-weight:600;color:var(--on-grad);box-shadow:0 6px 18px rgba(212,215,220,.35);}
-  .loy-who{flex:1;min-width:0;}
-  .loy-name{font-family:var(--font-heading);font-weight:800;font-size:14px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .loy-id{font-size:11.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .loy-id a{color:var(--accent-soft);text-decoration:none;}
-  .loy-bal{text-align:right;flex:0 0 auto;}
-  .loy-bal b{display:block;font-family:var(--font-display);font-size:30px;font-weight:600;line-height:1;color:var(--gold);letter-spacing:.02em;}
-  .loy-bal b small{font-size:13px;color:var(--muted);margin-left:3px;font-weight:500;}
-  .loy-bal span{display:block;font-size:11px;color:var(--muted);margin-top:4px;}
-  .loy-bal.zero b{color:var(--muted-dim);}
-  .loy-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px;}
-  .loy-chip{font-size:10.5px;color:var(--muted);border:1px solid var(--line-soft);background:rgba(255,255,255,.04);border-radius:999px;padding:4px 10px;}
-  .loy-chip.hold{color:var(--gold);border-color:rgba(232,234,238,.3);background:rgba(232,234,238,.08);}
-  .loy-actions{display:flex;gap:8px;margin-top:12px;}
-  .loy-actions .btn{flex:1;padding:11px 14px;font-size:11px;}
-  .loy-hero{display:flex;align-items:center;gap:14px;margin:14px 0 4px;padding:14px;border-radius:14px;border:1.5px solid var(--line);background:linear-gradient(160deg,#1C1C20,#0E0E10);}
-  .loy-hero .loy-bal{margin-left:auto;}
-  .loy-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;}
-  .loy-seg button{background:transparent;border:1.5px solid var(--line);color:var(--muted);border-radius:12px;padding:10px 4px 9px;font-family:var(--font-body);font-size:10px;letter-spacing:.04em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all .2s var(--ease);display:flex;flex-direction:column;align-items:center;gap:4px;}
-  .loy-seg button i{font-style:normal;font-size:18px;line-height:1;font-family:var(--font-display);}
-  .loy-seg button:active{transform:scale(.94);}
-  .loy-seg button.active{color:#fff;border-color:var(--accent);background:var(--accent-dim);}
-  .loy-seg button.active.neg{color:var(--danger);border-color:var(--danger);background:rgba(229,84,107,.1);}
-  .loy-seg button.active.pos{color:var(--ok);border-color:var(--ok);background:rgba(127,217,154,.09);}
-  .loy-quick{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
-  .loy-quick button{background:rgba(255,255,255,.04);border:1px solid var(--line);color:var(--text);border-radius:999px;padding:6px 12px;font-family:var(--font-body);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s var(--ease);}
-  .loy-quick button:hover{border-color:var(--accent);color:var(--accent);}
-  .loy-quick button:active{transform:scale(.93);}
-  .loy-quick.reasons button{font-weight:500;font-size:11.5px;}
-  .loy-preview{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px;padding:12px;border-radius:12px;background:rgba(255,255,255,.04);border:1px dashed var(--line);font-family:var(--font-display);font-size:22px;letter-spacing:.02em;}
-  .loy-preview .arr{color:var(--muted-dim);font-size:16px;}
-  .loy-preview .old{color:var(--muted);}
-  .loy-preview .new{color:var(--gold);}
-  .loy-preview .new.up{color:var(--ok);} .loy-preview .new.down{color:var(--danger);}
-  .loy-preview small{font-family:var(--font-body);font-size:11px;color:var(--muted);}
-  .loy-switch{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0 0;text-transform:none;letter-spacing:0;color:var(--text);font-weight:500;padding:12px 14px;border:1.5px solid var(--line);border-radius:12px;cursor:pointer;font-size:13px;}
-  .loy-switch small{display:block;color:var(--muted);font-size:11px;margin-top:2px;}
-  .loy-switch input{display:none;}
-  .loy-switch .sw{flex:0 0 auto;width:42px;height:24px;border-radius:999px;background:var(--line);position:relative;transition:background .2s var(--ease);}
-  .loy-switch .sw::after{content:"";position:absolute;left:3px;top:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:transform .25s var(--ease-spring);}
-  .loy-switch input:checked + .sw{background:var(--accent);}
-  .loy-switch input:checked + .sw::after{transform:translateX(18px);}
-  .loy-hist-title{margin-top:22px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500;}
-  .loy-hist{margin-top:8px;border:1.5px solid var(--line);border-radius:12px;overflow:hidden;max-height:230px;overflow-y:auto;}
-  .loy-h-row{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line-soft);font-size:12px;}
-  .loy-h-row:last-child{border-bottom:none;}
-  .loy-h-d{flex:0 0 auto;min-width:54px;font-family:var(--font-display);font-size:16px;font-weight:600;}
-  .loy-h-d.pos{color:var(--ok);} .loy-h-d.neg{color:var(--danger);}
-  .loy-h-t{flex:1;min-width:0;line-height:1.35;}
-  .loy-h-t em{display:block;font-style:normal;color:var(--muted);font-size:10.5px;margin-top:1px;}
-  .loy-h-b{flex:0 0 auto;color:var(--muted);font-size:11px;}
-  .loy-h-tag{font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-soft);border:1px solid rgba(212,215,220,.35);border-radius:999px;padding:1px 6px;margin-left:6px;vertical-align:1px;}
-  .loy-empty-h{padding:18px;text-align:center;color:var(--muted);font-size:12px;}
-  .order-loy-btn{margin-top:10px;width:100%;padding:11px 14px;font-size:11px;}
 
   /* ===================== DARK STREET · редизайн ===================== */
   :root{--paper:#F3F3F1;--ink:#0A0A0A;--on-grad:#0A0A0A;--grad:linear-gradient(180deg,#FFFFFF 0%,#E2E2DE 100%);--font-display:'Oswald','Arial Narrow',Impact,sans-serif;--font-heading:'Manrope',-apple-system,'Segoe UI',Roboto,Arial,sans-serif;}
@@ -483,9 +417,7 @@
     <button class="tab-btn active" data-tab="products">Товары</button>
     <button class="tab-btn" data-tab="orders">Заказы<span class="tab-badge" id="ordersBadge" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="questions">Вопросы<span class="tab-badge" id="questionsBadge" style="display:none;"></span></button>
-    <button class="tab-btn" data-tab="reviews">Отзывы<span class="tab-badge" id="reviewsBadge" style="display:none;"></span></button>
     <button class="tab-btn" data-tab="promos">Промокоды</button>
-    <button class="tab-btn" data-tab="loyalty">Баллы</button>
   </div>
   <div class="muted" id="countLabel"></div>
   <div id="list" style="margin-top:16px;"></div>
@@ -597,57 +529,6 @@
   </div>
 </div>
 
-<div class="overlay" id="loyOverlay">
-  <div class="modal">
-    <div class="modal-title">Управление баллами</div>
-    <div class="muted" id="loySub"></div>
-
-    <div class="loy-hero">
-      <div class="loy-ava" id="loyAva"></div>
-      <div class="loy-who">
-        <div class="loy-name" id="loyName"></div>
-        <div class="loy-id" id="loyMeta"></div>
-      </div>
-      <div class="loy-bal" id="loyBalBox"><b id="loyBal">0</b><span id="loyBalRub"></span></div>
-    </div>
-
-    <label>Действие</label>
-    <div class="loy-seg" id="loySeg">
-      <button type="button" class="pos" data-act="add"><i>＋</i>Начислить</button>
-      <button type="button" class="neg" data-act="subtract"><i>−</i>Списать</button>
-      <button type="button" data-act="set"><i>＝</i>Установить</button>
-      <button type="button" class="neg" data-act="reset"><i>✕</i>Обнулить</button>
-    </div>
-
-    <div id="loyAmountWrap">
-      <label id="loyAmountLabel">Количество баллов</label>
-      <input type="number" id="loyAmount" min="0" inputmode="numeric" placeholder="100">
-      <div class="loy-quick" id="loyQuick"></div>
-    </div>
-
-    <div class="loy-preview" id="loyPreview"></div>
-
-    <label>Причина <span class="muted" style="text-transform:none;letter-spacing:0;">— сохранится в истории</span></label>
-    <input type="text" id="loyNote" maxlength="200" placeholder="Например: отказ от покупки на месте">
-    <div class="loy-quick reasons" id="loyReasons"></div>
-
-    <label class="loy-switch" id="loyNotifyRow">
-      <span>Уведомить покупателя в Telegram<small>Он получит сообщение с новым балансом и причиной</small></span>
-      <input type="checkbox" id="loyNotify"><span class="sw"></span>
-    </label>
-
-    <div class="error" id="loyError"></div>
-
-    <div class="modal-actions">
-      <button class="btn-outline" id="loyCancel">Закрыть</button>
-      <button class="btn" id="loySave">Применить</button>
-    </div>
-
-    <div class="loy-hist-title">История баллов</div>
-    <div class="loy-hist" id="loyHist"></div>
-  </div>
-</div>
-
 <div class="toast-stack" id="toastStack"></div>
 
 <script>
@@ -672,7 +553,6 @@ let pwd = localStorage.getItem('sh_admin_pwd') || '';
 let products = [];
 let orders = [];
 let questions = [];
-let reviews = [];
 let promos = [];
 let currentTab = 'products';
 let editingId = null;
@@ -749,11 +629,10 @@ async function enterApp(){
   await loadProducts();
   await loadOrders();
   await loadQuestions();
-  await loadReviews();
   await loadPromos();
 }
 
-const TAB_TITLES = { products:'Товары', orders:'Заказы', questions:'Вопросы', reviews:'Отзывы', promos:'Промокоды', loyalty:'Баллы покупателей' };
+const TAB_TITLES = { products:'Товары', orders:'Заказы', questions:'Вопросы', promos:'Промокоды', };
 
 document.querySelectorAll('.tab-btn').forEach(btn=>{
   btn.onclick = async () => {
@@ -771,12 +650,6 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     } else if (currentTab === 'questions'){
       await loadQuestions();
       renderQuestions();
-    } else if (currentTab === 'reviews'){
-      await loadReviews();
-      renderReviews();
-    } else if (currentTab === 'loyalty'){
-      try { await loadLoyalty(); } catch(e){ showToast(e.message); }
-      if (currentTab === 'loyalty') renderLoyalty();
     } else {
       await loadPromos();
       renderPromos();
@@ -928,12 +801,12 @@ function renderOrders(){
         <span class="status-badge status-${o.status}">${statusLabel(o.status)}</span>
       </div>
       <div class="order-items">${(o.items||[]).map(i=>`${i.name} (${i.size||'—'}) × ${i.qty}`).join('<br>')}</div>
-      ${o.delivery ? `<div class="card-sub" style="color:var(--text);line-height:1.7;">${o.delivery.mode==='delivery' ? '🚚 Доставка: '+(o.delivery.address||'—')+' (+'+fmt(o.delivery.fee||0)+')' : '📍 Самовывоз: '+(o.delivery.point||'—')}<br>${o.delivery.asap ? '⚡ Как можно скорее' : '🕒 '+(o.delivery.date||'').split('-').reverse().slice(0,2).join('.')+' в '+(o.delivery.time||'')}</div>` : ''}
       ${o.discount ? `<div class="card-sub">Промокод: ${o.promo_code} (−${fmt(o.discount)}) · Сумма товаров: ${fmt(o.subtotal)}</div>` : ''}
       <div class="card-sub">Итого: ${fmt(o.total)}</div>
       <div class="order-contact">
-        👤 ${o.name}<br>
-        📞 <a href="tel:${o.phone}">${o.phone}</a>${o.customer_username ? ` · <a href="https://t.me/${o.customer_username}" target="_blank" rel="noopener">@${o.customer_username}</a>` : ''}
+        ${o.contact_mode === 'username' ? '✍️ Менеджер должен написать клиенту первым' : '💬 Клиент пишет менеджеру сам'}<br>
+        ${o.customer_username ? `<a href="https://t.me/${o.customer_username}" target="_blank" rel="noopener">@${o.customer_username}</a>` : '<span class="muted">юзернейм не указан</span>'}
+        ${o.name ? `<br>👤 ${o.name}` : ''}${o.phone ? `<br>📞 <a href="tel:${o.phone}">${o.phone}</a>` : ''}
       </div>
       ${o.comment ? `<div class="order-comment">«${o.comment}»</div>` : ''}
       <div class="order-actions">
@@ -946,16 +819,12 @@ function renderOrders(){
              <input type="text" class="text-input" placeholder="Написать клиенту в Telegram…" data-msg-input="${o.id}">
              <button class="btn-outline" data-msg-send="${o.id}">➤</button>
            </div>`
-        : `<div class="no-chat">Клиент открыл магазин вне Telegram — написать через бота нельзя, свяжитесь по телефону.</div>`}
-      ${o.customer_chat_id ? `<button class="btn-outline order-loy-btn" data-loy-for="${o.customer_chat_id}">⭐ Баллы клиента${o.points_spent ? ` · списано в заказе ${o.points_spent} б.` : ''}</button>` : ''}
+        : `<div class="no-chat">Клиент открыл магазин вне Telegram — написать через бота нельзя, свяжитесь через юзернейм.</div>`}
     </div>
   `).join('');
 
   list.querySelectorAll('[data-status]').forEach(sel=>{
     sel.onchange = () => updateOrderStatus(Number(sel.dataset.status), sel.value);
-  });
-  list.querySelectorAll('[data-loy-for]').forEach(btn=>{
-    btn.onclick = () => openLoyaltyFor(Number(btn.dataset.loyFor));
   });
   list.querySelectorAll('[data-msg-send]').forEach(btn=>{
     btn.onclick = () => sendOrderMessage(Number(btn.dataset.msgSend));
@@ -1074,294 +943,6 @@ async function sendQuestionMessage(id){
   } catch(e){
     showToast(e.message);
     input.disabled = false;
-  }
-}
-
-// --- Баллы покупателей -------------------------------------------------
-let loyalty = { customers: [], point_value: 0.5, total_points: 0, with_points: 0 };
-let loyQuery = '';
-let loyCurrent = null;       // клиент, открытый в окне управления
-let loyAction = 'subtract';
-
-const nfmt = n => Number(n||0).toLocaleString('ru-RU');
-const pointsRub = n => nfmt(Math.round(n * (loyalty.point_value || 0.5) * 100) / 100) + ' ₽';
-
-async function loadLoyalty(){
-  loyalty = await api('/api/admin/loyalty');
-}
-
-function loyCustomerName(c){
-  return c.name || (c.username ? '@' + c.username : 'Покупатель ' + c.telegram_id);
-}
-
-function renderLoyalty(){
-  document.getElementById('countLabel').textContent = `${loyalty.customers.length} покупател(ей)`;
-  const list = document.getElementById('list');
-  list.innerHTML = `
-    <div class="loy-summary">
-      <div class="loy-stat"><b>${nfmt(loyalty.total_points)}</b><span>Баллов у клиентов</span></div>
-      <div class="loy-stat"><b>${nfmt(loyalty.with_points)}</b><span>Клиентов с баллами</span></div>
-      <div class="loy-stat"><b>${pointsRub(loyalty.total_points)}</b><span>Это в рублях</span></div>
-    </div>
-    <div class="loy-search">
-      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input type="text" id="loySearch" placeholder="Поиск: имя, @username, телефон, Telegram ID" value="${escR(loyQuery)}">
-    </div>
-    <div id="loyList"></div>`;
-  document.getElementById('loySearch').oninput = e => { loyQuery = e.target.value; renderLoyList(); };
-  renderLoyList();
-}
-
-function renderLoyList(){
-  const q = loyQuery.trim().toLowerCase().replace(/^@/, '');
-  const items = loyalty.customers.filter(c => !q ||
-    [c.name, c.username, c.phone, String(c.telegram_id)].some(v => String(v||'').toLowerCase().includes(q)));
-  const box = document.getElementById('loyList');
-  if (!items.length){
-    box.innerHTML = `<div class="empty">${loyalty.customers.length ? 'Никого не найдено.' : 'Пока нет покупателей с баллами — они появятся после первого заказа из Telegram.'}</div>`;
-    return;
-  }
-  box.innerHTML = items.map(c => {
-    const nm = loyCustomerName(c);
-    return `
-    <div class="loy-card">
-      <div class="loy-top">
-        <div class="loy-ava">${escR(nm.replace('@','').charAt(0).toUpperCase() || '?')}</div>
-        <div class="loy-who">
-          <div class="loy-name">${escR(nm)}</div>
-          <div class="loy-id">${c.username ? `<a href="https://t.me/${escR(c.username)}" target="_blank" rel="noopener">@${escR(c.username)}</a> · ` : ''}ID ${c.telegram_id}${c.phone ? ' · ' + escR(c.phone) : ''}</div>
-        </div>
-        <div class="loy-bal ${c.points_balance ? '' : 'zero'}"><b>${nfmt(c.points_balance)}<small>б.</small></b><span>≈ ${pointsRub(c.points_balance)}</span></div>
-      </div>
-      <div class="loy-chips">
-        <span class="loy-chip">Заказов: ${c.orders}</span>
-        <span class="loy-chip">Выкуплено на ${fmt(c.total_spent)}</span>
-        ${c.reserved ? `<span class="loy-chip hold">В резерве по заказам: ${nfmt(c.reserved)} б.</span>` : ''}
-      </div>
-      <div class="loy-actions">
-        <button class="btn" data-loy-open="${c.telegram_id}">Управлять баллами</button>
-        ${c.points_balance ? `<button class="btn-danger" data-loy-reset="${c.telegram_id}">Обнулить</button>` : ''}
-      </div>
-    </div>`;
-  }).join('');
-  box.querySelectorAll('[data-loy-open]').forEach(b => b.onclick = () => openLoyModal(Number(b.dataset.loyOpen)));
-  box.querySelectorAll('[data-loy-reset]').forEach(b => b.onclick = () => openLoyModal(Number(b.dataset.loyReset), 'reset'));
-}
-
-const LOY_REASONS = {
-  add: ['Бонус от магазина', 'Компенсация', 'Ошибка списания'],
-  subtract: ['Отказ от покупки на месте', 'Заказ не выкуплен', 'Ошибочное начисление'],
-  set: ['Исправление баланса', 'Сверка баланса'],
-  reset: ['Отказ от покупки на месте', 'Заказ не выкуплен', 'Мошенничество / злоупотребление']
-};
-const LOY_AMOUNTS = { add: [50, 100, 250, 500], subtract: [50, 100, 250, 500], set: [0, 100, 500] };
-
-function loyNewBalance(){
-  const old = loyCurrent ? loyCurrent.points_balance : 0;
-  const amt = Math.max(0, Math.floor(Number(document.getElementById('loyAmount').value) || 0));
-  if (loyAction === 'add') return old + amt;
-  if (loyAction === 'subtract') return Math.max(0, old - amt);
-  if (loyAction === 'set') return amt;
-  return 0;
-}
-
-function renderLoyForm(){
-  const act = loyAction;
-  document.querySelectorAll('#loySeg button').forEach(b => b.classList.toggle('active', b.dataset.act === act));
-  document.getElementById('loyAmountWrap').style.display = act === 'reset' ? 'none' : 'block';
-  document.getElementById('loyAmountLabel').textContent = act === 'set' ? 'Новый баланс, баллов' : 'Количество баллов';
-
-  const quick = document.getElementById('loyQuick');
-  const old = loyCurrent ? loyCurrent.points_balance : 0;
-  const amounts = (LOY_AMOUNTS[act] || []).slice();
-  quick.innerHTML = amounts.map(a => `<button type="button" data-q="${a}">${act === 'add' ? '+' : act === 'subtract' ? '−' : ''}${a}</button>`).join('')
-    + (act === 'subtract' && old ? `<button type="button" data-q="${old}">Все (${nfmt(old)})</button>` : '');
-  quick.querySelectorAll('button').forEach(b => b.onclick = () => { document.getElementById('loyAmount').value = b.dataset.q; renderLoyPreview(); });
-
-  const reasons = document.getElementById('loyReasons');
-  reasons.innerHTML = (LOY_REASONS[act] || []).map(r => `<button type="button">${r}</button>`).join('');
-  reasons.querySelectorAll('button').forEach(b => b.onclick = () => { document.getElementById('loyNote').value = b.textContent; });
-
-  renderLoyPreview();
-}
-
-function renderLoyPreview(){
-  const old = loyCurrent ? loyCurrent.points_balance : 0;
-  const nw = loyNewBalance();
-  const cls = nw > old ? 'up' : nw < old ? 'down' : '';
-  const d = nw - old;
-  document.getElementById('loyPreview').innerHTML =
-    `<span class="old">${nfmt(old)}</span><span class="arr">➜</span><span class="new ${cls}">${nfmt(nw)}</span>` +
-    `<small>${d ? (d > 0 ? '+' : '−') + nfmt(Math.abs(d)) + ' б.' : 'без изменений'}</small>`;
-}
-document.getElementById('loyAmount').addEventListener('input', renderLoyPreview);
-document.querySelectorAll('#loySeg button').forEach(b => b.onclick = () => { loyAction = b.dataset.act; renderLoyForm(); });
-
-function fillLoyHero(){
-  const c = loyCurrent;
-  const nm = loyCustomerName(c);
-  document.getElementById('loyAva').textContent = nm.replace('@','').charAt(0).toUpperCase() || '?';
-  document.getElementById('loyName').textContent = nm;
-  document.getElementById('loyMeta').textContent = (c.username ? '@' + c.username + ' · ' : '') + 'ID ' + c.telegram_id;
-  document.getElementById('loySub').textContent = c.reserved ? `В резерве по незавершённым заказам: ${nfmt(c.reserved)} б.` : 'списание, начисление и обнуление баланса';
-  document.getElementById('loyBal').innerHTML = `${nfmt(c.points_balance)}<small>б.</small>`;
-  document.getElementById('loyBalRub').textContent = '≈ ' + pointsRub(c.points_balance);
-  document.getElementById('loyBalBox').classList.toggle('zero', !c.points_balance);
-}
-
-function openLoyModal(tgId, action){
-  const c = loyalty.customers.find(x => x.telegram_id === tgId);
-  if (!c) return;
-  loyCurrent = { ...c };
-  loyAction = action || 'subtract';
-  document.getElementById('loyError').textContent = '';
-  document.getElementById('loyAmount').value = '';
-  document.getElementById('loyNote').value = '';
-  document.getElementById('loyNotify').checked = false;
-  fillLoyHero();
-  renderLoyForm();
-  loadLoyHistory(tgId);
-  document.getElementById('loyOverlay').classList.add('open');
-}
-
-function closeLoyModal(){ document.getElementById('loyOverlay').classList.remove('open'); loyCurrent = null; }
-document.getElementById('loyCancel').onclick = closeLoyModal;
-document.getElementById('loyOverlay').addEventListener('click', e => { if (e.target.id === 'loyOverlay') closeLoyModal(); });
-
-async function loadLoyHistory(tgId){
-  const box = document.getElementById('loyHist');
-  box.innerHTML = '<div class="loy-empty-h">Загрузка…</div>';
-  try {
-    const rows = await api(`/api/admin/loyalty/${tgId}/history`);
-    if (!loyCurrent || loyCurrent.telegram_id !== tgId) return;
-    if (!rows.length){ box.innerHTML = '<div class="loy-empty-h">Операций пока нет.</div>'; return; }
-    box.innerHTML = rows.map(r => `
-      <div class="loy-h-row">
-        <div class="loy-h-d ${r.delta > 0 ? 'pos' : 'neg'}">${r.delta > 0 ? '+' : '−'}${nfmt(Math.abs(r.delta))}</div>
-        <div class="loy-h-t">${escR(r.note || (r.kind === 'admin' ? 'Корректировка' : 'Заказ'))}${r.kind === 'admin' ? '<span class="loy-h-tag">админ</span>' : ''}
-          <em>${r.at ? new Date(r.at).toLocaleString('ru-RU') : ''}</em></div>
-        <div class="loy-h-b">→ ${nfmt(r.balance_after)}</div>
-      </div>`).join('');
-  } catch(e){
-    box.innerHTML = `<div class="loy-empty-h">${escR(e.message)}</div>`;
-  }
-}
-
-document.getElementById('loySave').onclick = async () => {
-  if (!loyCurrent) return;
-  const errEl = document.getElementById('loyError');
-  errEl.textContent = '';
-  const amount = Math.floor(Number(document.getElementById('loyAmount').value) || 0);
-  if (loyAction !== 'reset'){
-    if (loyAction !== 'set' && amount <= 0){ errEl.textContent = 'Укажите количество баллов'; return; }
-    if (loyAction === 'set' && document.getElementById('loyAmount').value === ''){ errEl.textContent = 'Укажите новый баланс'; return; }
-  }
-  const nw = loyNewBalance();
-  if (nw === loyCurrent.points_balance){ errEl.textContent = 'Баланс не изменится'; return; }
-  if (loyAction === 'reset' || nw === 0){
-    if (!confirm(`Обнулить баллы клиента «${loyCustomerName(loyCurrent)}»? Сейчас на балансе ${nfmt(loyCurrent.points_balance)} б.`)) return;
-  }
-  const btn = document.getElementById('loySave');
-  btn.disabled = true;
-  try {
-    const res = await api(`/api/admin/loyalty/${loyCurrent.telegram_id}/adjust`, {
-      method:'POST', headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ action: loyAction, amount, note: document.getElementById('loyNote').value.trim(),
-                             notify: document.getElementById('loyNotify').checked })
-    });
-    const c = loyalty.customers.find(x => x.telegram_id === res.telegram_id);
-    if (c) c.points_balance = res.points_balance;
-    loyalty.customers.sort((a,b) => b.points_balance - a.points_balance || b.orders - a.orders);
-    loyalty.total_points = loyalty.customers.reduce((s,x) => s + x.points_balance, 0);
-    loyalty.with_points = loyalty.customers.filter(x => x.points_balance > 0).length;
-    if (currentTab === 'loyalty') renderLoyalty();
-    const d = res.delta;
-    showToast(d > 0 ? `Начислено ${nfmt(d)} б.` : d < 0 ? `Списано ${nfmt(-d)} б.` : 'Без изменений');
-    if (document.getElementById('loyNotify').checked && !res.notified) showToast('Баллы изменены, но сообщение клиенту не доставлено');
-    closeLoyModal();
-  } catch(e){
-    errEl.textContent = e.message;
-  } finally {
-    btn.disabled = false;
-  }
-};
-
-async function openLoyaltyFor(tgId){
-  const tabBtn = document.querySelector('.tab-btn[data-tab="loyalty"]');
-  if (currentTab !== 'loyalty') tabBtn.click();
-  await new Promise(r => setTimeout(r, 0));
-  try { await loadLoyalty(); renderLoyalty(); } catch(e){ showToast(e.message); return; }
-  if (!loyalty.customers.some(x => x.telegram_id === tgId)) { showToast('У клиента пока нет записи о баллах'); return; }
-  openLoyModal(tgId);
-}
-
-// --- Reviews -------------------------------------------------------
-
-function escR(str){
-  return String(str == null ? '' : str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-
-function refreshReviewsBadge(){
-  const badge = document.getElementById('reviewsBadge');
-  const pending = reviews.filter(r => !r.is_approved).length;
-  if (pending > 0){ badge.style.display = 'inline-block'; badge.textContent = pending; }
-  else badge.style.display = 'none';
-}
-
-async function loadReviews(){
-  try {
-    reviews = await api('/api/admin/reviews');
-  } catch(e){
-    reviews = [];
-    showToast(e.message);
-  }
-  refreshReviewsBadge();
-}
-
-function renderReviews(){
-  const pending = reviews.filter(r => !r.is_approved).length;
-  document.getElementById('countLabel').textContent =
-    `${reviews.length} отзыв(ов)` + (pending ? ` · на модерации: ${pending}` : '');
-  const list = document.getElementById('list');
-  if (reviews.length === 0){
-    list.innerHTML = '<div class="empty">Пока нет отзывов от покупателей.</div>';
-    return;
-  }
-  list.innerHTML = reviews.map(r => {
-    const stars = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
-    return `
-    <div class="order-card">
-      <div class="order-head">
-        <div>
-          <div class="order-id">${escR(r.author_name)}</div>
-          <div class="order-date">${new Date(r.created_at).toLocaleString('ru-RU')} · ID ${escR(r.telegram_id)}</div>
-        </div>
-        <span class="status-badge status-${r.is_approved ? 'done' : 'new'}">${r.is_approved ? 'Опубликован' : 'На модерации'}</span>
-      </div>
-      <div class="order-items"><span style="color:var(--gold);letter-spacing:.12em;">${stars}</span> (${r.rating}/5)</div>
-      <div class="order-comment" style="white-space:pre-wrap;overflow-wrap:anywhere;">${escR(r.text)}</div>
-      <div class="card-actions" style="margin-top:12px;">
-        <button class="btn-danger" data-review-del="${r.id}">Удалить</button>
-      </div>
-    </div>`;
-  }).join('');
-
-  list.querySelectorAll('[data-review-del]').forEach(btn => {
-    btn.onclick = () => deleteReview(Number(btn.dataset.reviewDel));
-  });
-}
-
-async function deleteReview(id){
-  const r = reviews.find(x => x.id === id);
-  if (!confirm(`Удалить отзыв${r ? ' от «' + r.author_name + '»' : ''}?`)) return;
-  try {
-    await api(`/api/admin/reviews/${id}`, { method:'DELETE' });
-    reviews = reviews.filter(x => x.id !== id);
-    refreshReviewsBadge();
-    renderReviews();
-    showToast('Отзыв удалён');
-  } catch(e){
-    showToast(e.message);
   }
 }
 
